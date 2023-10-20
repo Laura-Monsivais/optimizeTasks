@@ -22,15 +22,23 @@ return new class extends Migration
             $table->string('MaritalStatusID');
             $table->date('BirthDate');
             $table->string('BirthCity');
-            $table->id('BirthPlaceID');
-            $table->id('ReligionID');
+            $table->integer('BirthPlaceID');
+            $table->integer('ReligionID');
             $table->string('PrimaryEMail');
             $table->integer('CellPhone');
-            $table->id('NationalityID');
-            $table->id('ProgramID');
-            $table->id('TermID');
-            $table->id('ClassLevelID');
-            $table->id('GroupID');
+            $table->integer('NationalityID');
+            $table->integer('ProgramID');
+            $table->integer('TermID');
+            $table->integer('ClassLevelID');
+            $table->integer('GroupID');
+            $table->timestamps();
+
+            
+            $table->foreignId('id_places') 
+            ->nullable()
+            ->constrained('places')
+            ->cascadeOnUpdate()
+            ->nullOnDelete();
             $table->timestamps();
         });}
 

@@ -18,16 +18,29 @@ return new class extends Migration
             $table->string('LastName1');
             $table->string('LastName2');
             $table->string('Address1');
-            $table->int('ExtNum');
-            $table->int('IntNum');
+            $table->integer('ExtNum');
+            $table->integer('IntNum');
             $table->string('Address2');
             $table->string('City');
             $table->string('County');
-            $table->id('StateID');
-            $table->int('CodigoPostal');
-            $table->id('CountryID');
-            $table->int('Phone1');
-            $table->int('Phone2');
+            $table->integer('StateID');
+            $table->integer('CodigoPostal');
+            $table->integer('CountryID');
+            $table->integer('Phone1');
+            $table->integer('Phone2');
+
+            $table->foreignId('id_states') 
+            ->nullable()
+            ->constrained('states')
+            ->cascadeOnUpdate()
+            ->nullOnDelete();
+            $table->timestamps();
+
+            $table->foreignId('id_countries') 
+            ->nullable()
+            ->constrained('countries')
+            ->cascadeOnUpdate()
+            ->nullOnDelete();
             $table->timestamps();
         });
     }
