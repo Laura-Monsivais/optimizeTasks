@@ -13,9 +13,10 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
-Route::get('/', function () {
-    return view('welcome');
-});
+// Route::get('/', function () {
+//     return view('welcome');
+// });
 
-Route::get('/families', [App\Http\Controllers\FamilyController::class, 'index']);
+// Route::get('/families', [App\Http\Controllers\FamilyController::class, 'index']);
 
+Route::get('/', 'App\Http\Controllers\FamilyController@index');
