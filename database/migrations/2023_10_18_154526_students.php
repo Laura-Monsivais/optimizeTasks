@@ -40,7 +40,8 @@ return new class extends Migration
             ->cascadeOnUpdate()
             ->nullOnDelete();
             $table->timestamps();
-        });}
+        });
+    }
 
     /**
      * Reverse the migrations.
