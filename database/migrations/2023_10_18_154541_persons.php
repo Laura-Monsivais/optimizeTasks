@@ -19,15 +19,24 @@ return new class extends Migration
             $table->string('Last2');
             $table->char('Gender');
             $table->date('BirthDate');
-            $table->id('BirthPlaceID');
+            $table->integer('BirthPlaceID');
             $table->string('BirthCity');
             $table->string('CURP');
             $table->integer('CellPhone');
-            $table->id('PrimaryEmail');
-            $table->id('MaritalStatusID');
+            $table->integer('PrimaryEmail');
+            $table->integer('MaritalStatusID');
             $table->string('WorkPlace');
             $table->string('WorkJob');
             $table->timestamps();
+
+            
+            $table->foreignId('id_places') 
+            ->nullable()
+            ->constrained('places')
+            ->cascadeOnUpdate()
+            ->nullOnDelete();
+            $table->timestamps();
+
         });
     }
 
