@@ -29,17 +29,17 @@ return new class extends Migration
             $table->integer('Phone1');
             $table->integer('Phone2');
 
-            Schema::create('states', function (Blueprint $table) {
+            Schema::create('StateID', function (Blueprint $table) {
                 $table->id();
-                $table->unsignedBigInteger('states_id');
-                $table->foreign('states_id')->references('id')->on('states')->onDelete('cascade');
+                $table->unsignedBigInteger('StateID');
+                $table->foreign('StateID')->references('ID')->on('states')->onDelete('cascade');
                 $table->timestamps();
             });
 
-            Schema::create('countries', function (Blueprint $table) {
+            Schema::create('CountryID', function (Blueprint $table) {
                 $table->id();
-                $table->unsignedBigInteger('countries_id');
-                $table->foreign('countries_id')->references('id')->on('countries')->onDelete('cascade');
+                $table->unsignedBigInteger('CountryID');
+                $table->foreign('CountryID')->references('ID')->on('countries')->onDelete('cascade');
                 $table->timestamps();
             });
         });

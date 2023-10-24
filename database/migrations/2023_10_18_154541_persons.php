@@ -31,10 +31,10 @@ return new class extends Migration
 
         });
 
-        Schema::create('marital_statuses', function (Blueprint $table) {
+        Schema::create('MaritalStatusID', function (Blueprint $table) {
             $table->id();
-            $table->unsignedBigInteger('marital_statuses_id');
-            $table->foreign('marital_statuses_id')->references('id')->on('marital_statuses')->onDelete('cascade');
+            $table->unsignedBigInteger('MaritalStatusID');
+            $table->foreign('MaritalStatusID')->references('ID')->on('marital_statuses')->onDelete('cascade');
             $table->timestamps();       
          });
     }

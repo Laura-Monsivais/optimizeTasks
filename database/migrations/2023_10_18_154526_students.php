@@ -33,45 +33,52 @@ return new class extends Migration
             $table->integer('GroupID');
             $table->timestamps();
 
-            Schema::create('marital_statuses', function (Blueprint $table) {
+            Schema::create('MaritalStatusID', function (Blueprint $table) {
                 $table->id();
-                $table->unsignedBigInteger('marital_statuses_id');
-                $table->foreign('marital_statuses_id')->references('id')->on('marital_statuses')->onDelete('cascade');
+                $table->unsignedBigInteger('MaritalStatusID');
+                $table->foreign('MaritalStatusID')->references('ID')->on('marital_statuses')->onDelete('cascade');
                 $table->timestamps();
             });
 
-            Schema::create('nationalities', function (Blueprint $table) {
+            Schema::create('NationalityID', function (Blueprint $table) {
                 $table->id();
-                $table->unsignedBigInteger('nationalities_id');
-                $table->foreign('nationalities_id')->references('id')->on('nationalities')->onDelete('cascade');
+                $table->unsignedBigInteger('NationalityID');
+                $table->foreign('NationalityID')->references('ID')->on('nationalities')->onDelete('cascade');
                 $table->timestamps();
             });
 
-            Schema::create('religions', function (Blueprint $table) {
+            Schema::create('ReligionID', function (Blueprint $table) {
                 $table->id();
-                $table->unsignedBigInteger('religions_id');
-                $table->foreign('religions_id')->references('id')->on('religions')->onDelete('cascade');
+                $table->unsignedBigInteger('ReligionID');
+                $table->foreign('ReligionID')->references('ID')->on('religions')->onDelete('cascade');
                 $table->timestamps();
             });
 
-            Schema::create('states', function (Blueprint $table) {
+            Schema::create('ProgramID', function (Blueprint $table) {
                 $table->id();
-                $table->unsignedBigInteger('states_id');
-                $table->foreign('states_id')->references('id')->on('states')->onDelete('cascade');
+                $table->unsignedBigInteger('ProgramID');
+                $table->foreign('ProgramID')->references('ID')->on('PROGRAMS')->onDelete('cascade');
                 $table->timestamps();
             });
 
-            Schema::create('places', function (Blueprint $table) {
+            Schema::create('TermID', function (Blueprint $table) {
                 $table->id();
-                $table->unsignedBigInteger('places_id');
-                $table->foreign('places_id')->references('id')->on('places')->onDelete('cascade');
+                $table->unsignedBigInteger('TermID');
+                $table->foreign('TermID')->references('ID')->on('terms')->onDelete('cascade');
                 $table->timestamps();
             });
-            
-            Schema::create('places', function (Blueprint $table) {
+
+            Schema::create('ClassLevelID', function (Blueprint $table) {
                 $table->id();
-                $table->unsignedBigInteger('places_id');
-                $table->foreign('places_id')->references('id')->on('places')->onDelete('cascade');
+                $table->unsignedBigInteger('ClassLevelID');
+                $table->foreign('ClassLevelID')->references('ID')->on('class_levels')->onDelete('cascade');
+                $table->timestamps();
+            });
+
+            Schema::create('GroupID', function (Blueprint $table) {
+                $table->id();
+                $table->unsignedBigInteger('GroupID');
+                $table->foreign('GroupID')->references('ID')->on('groups')->onDelete('cascade');
                 $table->timestamps();
             });
 
