@@ -13,4 +13,6 @@ class Alumnos extends Model
     public function Alumnos(){
         return $this->hasMany(Alumnos::class,'id');
     }
+
 }
+

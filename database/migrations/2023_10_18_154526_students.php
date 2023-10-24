@@ -33,13 +33,49 @@ return new class extends Migration
             $table->integer('GroupID');
             $table->timestamps();
 
+            Schema::create('marital_statuses', function (Blueprint $table) {
+                $table->id();
+                $table->unsignedBigInteger('marital_statuses_id');
+                $table->foreign('marital_statuses_id')->references('id')->on('marital_statuses')->onDelete('cascade');
+                $table->timestamps();
+            });
+
+            Schema::create('nationalities', function (Blueprint $table) {
+                $table->id();
+                $table->unsignedBigInteger('nationalities_id');
+                $table->foreign('nationalities_id')->references('id')->on('nationalities')->onDelete('cascade');
+                $table->timestamps();
+            });
+
+            Schema::create('religions', function (Blueprint $table) {
+                $table->id();
+                $table->unsignedBigInteger('religions_id');
+                $table->foreign('religions_id')->references('id')->on('religions')->onDelete('cascade');
+                $table->timestamps();
+            });
+
+            Schema::create('states', function (Blueprint $table) {
+                $table->id();
+                $table->unsignedBigInteger('states_id');
+                $table->foreign('states_id')->references('id')->on('states')->onDelete('cascade');
+                $table->timestamps();
+            });
+
+            Schema::create('places', function (Blueprint $table) {
+                $table->id();
+                $table->unsignedBigInteger('places_id');
+                $table->foreign('places_id')->references('id')->on('places')->onDelete('cascade');
+                $table->timestamps();
+            });
             
-            $table->foreignId('id_places') 
-            ->nullable()
-            ->constrained('places')
-            ->cascadeOnUpdate()
-            ->nullOnDelete();
-            $table->timestamps();
+            Schema::create('places', function (Blueprint $table) {
+                $table->id();
+                $table->unsignedBigInteger('places_id');
+                $table->foreign('places_id')->references('id')->on('places')->onDelete('cascade');
+                $table->timestamps();
+            });
+
+
         });
     }
 

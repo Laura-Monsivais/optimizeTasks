@@ -29,15 +29,14 @@ return new class extends Migration
             $table->string('WorkJob');
             $table->timestamps();
 
-            
-            $table->foreignId('id_places') 
-            ->nullable()
-            ->constrained('places')
-            ->cascadeOnUpdate()
-            ->nullOnDelete();
-            $table->timestamps();
-
         });
+
+        Schema::create('marital_statuses', function (Blueprint $table) {
+            $table->id();
+            $table->unsignedBigInteger('marital_statuses_id');
+            $table->foreign('marital_statuses_id')->references('id')->on('marital_statuses')->onDelete('cascade');
+            $table->timestamps();       
+         });
     }
 
     /**
