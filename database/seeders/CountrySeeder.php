@@ -154,7 +154,7 @@ class CountrySeeder extends Seeder
             ['ID' => 139, 'Name' => 'MAURITANIA'],
             ['ID' => 140, 'Name' => 'MAURITIUS'],
             ['ID' => 141, 'Name' => 'MAYOTTE'],
-            ['ID' => 142, 'Name' => 'México'],
+            ['ID' => 142, 'Name' => 'MÉXICO'],
             ['ID' => 143, 'Name' => 'MICRONESIA, FEDERATED STATES OF'],
             ['ID' => 144, 'Name' => 'MOLDOVA, REPUBLIC OF'],
             ['ID' => 145, 'Name' => 'MONACO'],

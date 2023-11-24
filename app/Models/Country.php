@@ -10,4 +10,14 @@ class Country extends Model
     use HasFactory;
     protected $table = 'countries';
     protected $fillable = ['ID', 'Name'];
+
+    public function FindCountry($id) {
+        $Country = Country::find($id);
+    
+        if ($Country) {
+            return $Country;
+        } else {
+            return response()->json(['mensaje' => 'Registro no encontrado'], 404);
+        }
+    }
 }

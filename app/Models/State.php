@@ -11,7 +11,13 @@ class State extends Model
     protected $table = 'states';
     protected $fillable = ['ID', 'Name'];
 
-    public function states(){
-        return $this->hasMany(State::class,'id');
+    public function FindFamily($id) {
+        $State = Family::find($id);
+    
+        if ($State) {
+            return $State;
+        } else {
+            return response()->json(['mensaje' => 'Registro no encontrado'], 404);
+        }
     }
 }

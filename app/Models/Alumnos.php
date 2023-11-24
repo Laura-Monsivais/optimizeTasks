@@ -14,5 +14,15 @@ class Alumnos extends Model
         return $this->hasMany(Alumnos::class,'id');
     }
 
+    public function FindStudent($id) {
+        $Alumnos = Alumnos::find($id);
+    
+        if ($Alumnos) {
+            return $Alumnos;
+        } else {
+            return response()->json(['mensaje' => 'Registro no encontrado'], 404);
+        }
+    }
+
 }
 

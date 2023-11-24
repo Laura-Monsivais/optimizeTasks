@@ -8,4 +8,17 @@ use Illuminate\Database\Eloquent\Model;
 class MaritalStatus extends Model
 {
     use HasFactory;
+
+    protected $table = 'maritalstatus';
+    protected $fillable = ['ID', 'Name'];
+
+    public function FindMaritalStatus($id) {
+        $Marital = MaritalStatus::find($id);
+    
+        if ($Marital) {
+            return $Marital;
+        } else {
+            return response()->json(['mensaje' => 'Registro no encontrado'], 404);
+        }
+    }
 }

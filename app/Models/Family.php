@@ -14,4 +14,14 @@ class Family extends Model
     public function State(){
         return $this->belongsTo(State::class,'id_state');
     }
+
+    public function FindFamily($id) {
+        $Family = Family::find($id);
+    
+        if ($Family) {
+            return $Family;
+        } else {
+            return response()->json(['mensaje' => 'Registro no encontrado'], 404);
+        }
+    }
 }
