@@ -11,8 +11,8 @@ class State extends Model
     protected $table = 'states';
     protected $fillable = ['ID', 'Name'];
 
-    public function FindFamily($id) {
-        $State = Family::find($id);
+    public static function FindState($id) {
+        $State = State::find($id);
     
         if ($State) {
             return $State;

@@ -19,15 +19,16 @@ return new class extends Migration
             $table->string('LastName2');
             $table->string('Address1');
             $table->integer('ExtNum');
-            $table->integer('IntNum');
+            $table->integer('IntNum')->nullable();
             $table->string('Address2');
             $table->string('City');
             $table->string('County');
             $table->integer('StateID');
             $table->integer('CodigoPostal');
             $table->integer('CountryID');
-            $table->integer('Phone1');
+            $table->integer('Phone1')->nullable();
             $table->integer('Phone2');
+            $table->timestamps();
 
             Schema::create('StateID', function (Blueprint $table) {
                 $table->id();

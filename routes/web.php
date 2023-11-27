@@ -19,4 +19,6 @@ use Illuminate\Support\Facades\Route;
 
 // Route::get('/families', [App\Http\Controllers\FamilyController::class, 'index']);
 
-Route::get('/', 'App\Http\Controllers\FamilyController@index');
+Route::get('/index', 'App\Http\Controllers\FamilyController@index');
+Route::get('/stateID/{ID}', 'App\Http\Controllers\FamilyController@getStateID');
+Route::post('/', 'App\Http\Controllers\FamilyController@registerFamily');

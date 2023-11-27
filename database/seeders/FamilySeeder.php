@@ -18,15 +18,15 @@ class FamilySeeder extends Seeder
             'LastName2' => 'Peralta',
             'Address1' => 'Paseo de los Leones',
             'ExtNum' => '405',
-            'IntNum' => '',
+            'IntNum' => '105',
             'Address2' => '',
             'City' => 'Monterrey',
             'County' => 'Mexico',
             'StateID' => '19',
             'CodigoPostal' => '64460',
             'CountryID' => '1',
-            'Phone1' => '8641056871',
-            'Phone2' => ''
+            'Phone1' => '1',
+            'Phone2' => '1'
         ]);
     }
 }

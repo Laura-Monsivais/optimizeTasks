@@ -33,12 +33,12 @@ return new class extends Migration
             $table->integer('GroupID');
             $table->timestamps();
 
-            Schema::create('MaritalStatusID', function (Blueprint $table) {
+/*             Schema::create('MaritalStatusID', function (Blueprint $table) {
                 $table->id();
                 $table->unsignedBigInteger('MaritalStatusID');
                 $table->foreign('MaritalStatusID')->references('ID')->on('marital_statuses')->onDelete('cascade');
                 $table->timestamps();
-            });
+            }); */
 
             Schema::create('NationalityID', function (Blueprint $table) {
                 $table->id();
@@ -53,7 +53,7 @@ return new class extends Migration
                 $table->foreign('ReligionID')->references('ID')->on('religions')->onDelete('cascade');
                 $table->timestamps();
             });
-
+/* 
             Schema::create('ProgramID', function (Blueprint $table) {
                 $table->id();
                 $table->unsignedBigInteger('ProgramID');
@@ -80,7 +80,7 @@ return new class extends Migration
                 $table->unsignedBigInteger('GroupID');
                 $table->foreign('GroupID')->references('ID')->on('groups')->onDelete('cascade');
                 $table->timestamps();
-            });
+            }); */
 
 
         });
