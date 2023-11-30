@@ -26,13 +26,13 @@ class FamilyController extends Controller
     {
 
         $request->validate([
-            'LastName1' => 'required',
+            'Last2' => 'required',
             'Phone1' => 'max:10'
         ]);
 
         Family::create(
             [
-                'LastName1' => $request->input('LastName1'),
+                'Last2' => $request->input('Last2'),
                 'Phone1' => $request->input('Phone1')
             ]
         );

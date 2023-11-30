@@ -22,3 +22,7 @@ use Illuminate\Support\Facades\Route;
 Route::get('/index', 'App\Http\Controllers\FamilyController@index');
 Route::get('/stateID/{ID}', 'App\Http\Controllers\FamilyController@getStateID');
 Route::post('/', 'App\Http\Controllers\FamilyController@registerFamily');
+Route::get('/index', 'App\Http\Controllers\PersonController@index');
+Route::post('/', 'App\Http\Controllers\FamilyController@registerPersons');
+Route::get('/index', 'App\Http\Controllers\StudentsController@index');
+Route::post('/', 'App\Http\Controllers\FamilyController@registerStudents');
