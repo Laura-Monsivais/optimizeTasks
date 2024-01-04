@@ -2,40 +2,32 @@
 
 namespace App\Http\Controllers;
 
+use App\Imports\ImportClass;
 use App\Models\State;
 use App\Models\Family;
 use App\Models\Place;
 use Illuminate\Http\Request;
+use Maatwebsite\Excel\Facades\Excel;
 
 class FamilyController extends Controller
 {
-    public function index()
+
+    public function index(Request $request)
     {
-        $family = Family::all();
-        return $family;
-        //return response()->json( $family );//
+        $importedData = Excel::toArray(new ImportClass, $request->file('excel_file'));
+
+        $data = $importedData[0]; 
+
+        return view('import', ['data' => $data])->with('success', 'Importación completada correctamente.');
     }
 
-    public function getStateID($id)
+    public function import(Request $request)
     {
-        $stateId = State::find($id);
-        return $stateId;
-    }
+        $importedData = Excel::import(new ImportClass, $request->file('excel_file'));
 
-    public function registerFamily(Request $request)
-    {
+     
 
-        $request->validate([
-            'Last2' => 'required',
-            'Phone1' => 'max:10'
-        ]);
 
-        Family::create(
-            [
-                'Last2' => $request->input('Last2'),
-                'Phone1' => $request->input('Phone1')
-            ]
-        );
-        return response()->json(['Familia creada exitosamente'],200);
+        return view('import', ['data' => $importedData])->with('success', 'Importación completada correctamente.');
     }
 }

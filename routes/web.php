@@ -19,10 +19,11 @@ use Illuminate\Support\Facades\Route;
 
 // Route::get('/families', [App\Http\Controllers\FamilyController::class, 'index']);
 
-Route::get('/index', 'App\Http\Controllers\FamilyController@index');
-Route::get('/stateID/{ID}', 'App\Http\Controllers\FamilyController@getStateID');
-Route::post('/', 'App\Http\Controllers\FamilyController@registerFamily');
-Route::get('/index', 'App\Http\Controllers\PersonController@index');
-Route::post('/', 'App\Http\Controllers\FamilyController@registerPersons');
-Route::get('/index', 'App\Http\Controllers\StudentsController@index');
-Route::post('/', 'App\Http\Controllers\FamilyController@registerStudents');
+
+//Route::post('/', 'FamilyController@import')->name('importData');
+//Route::get('/posts', 'FamilyController@index')->name('posts');
+//Route::get('/families', [App\Http\Controllers\FamilyController::class, 'index'])->name('import');
+Route::get('/',  [App\Http\Controllers\FamilyController::class, 'import'])->name('import');
+
+
+
