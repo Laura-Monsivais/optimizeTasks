@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\FamilyController;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -12,18 +13,8 @@ use Illuminate\Support\Facades\Route;
 | be assigned to the "web" middleware group. Make something great!
 |
 */
-
-// Route::get('/', function () {
-//     return view('welcome');
-// });
-
-// Route::get('/families', [App\Http\Controllers\FamilyController::class, 'index']);
-
-
-//Route::post('/', 'FamilyController@import')->name('importData');
-//Route::get('/posts', 'FamilyController@index')->name('posts');
-//Route::get('/families', [App\Http\Controllers\FamilyController::class, 'index'])->name('import');
-Route::get('/',  [App\Http\Controllers\FamilyController::class, 'import'])->name('import');
+Route::get('/', [FamilyController::class, 'showImport'])->name('showImport');
+Route::post('/import', [FamilyController::class, 'uploadImport'])->name('uploadImport');
 
 
 

@@ -2,9 +2,8 @@
 namespace App\Imports;
 
 use Maatwebsite\Excel\Concerns\ToArray;
-use Maatwebsite\Excel\Concerns\WithHeadingRow;
 
-class ImportClass implements ToArray, WithHeadingRow
+class ImportClass implements ToArray
 {
     protected $data = [];
 
@@ -18,3 +17,4 @@ class ImportClass implements ToArray, WithHeadingRow
         return $this->data;
     }
 }
+

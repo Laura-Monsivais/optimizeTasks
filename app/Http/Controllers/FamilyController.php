@@ -3,31 +3,35 @@
 namespace App\Http\Controllers;
 
 use App\Imports\ImportClass;
-use App\Models\State;
-use App\Models\Family;
-use App\Models\Place;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Storage;
 use Maatwebsite\Excel\Facades\Excel;
 
 class FamilyController extends Controller
 {
 
-    public function index(Request $request)
+    public function showImport()
     {
-        $importedData = Excel::toArray(new ImportClass, $request->file('excel_file'));
-
-        $data = $importedData[0]; 
-
-        return view('import', ['data' => $data])->with('success', 'Importación completada correctamente.');
+        return view('import');
     }
 
-    public function import(Request $request)
+    public function uploadImport(Request $request)
     {
-        $importedData = Excel::import(new ImportClass, $request->file('excel_file'));
+        // Validación del formulario
+        $request->validate([
+            'excel_file' => 'required|mimes:xlsx|max:10240', // Máximo 10 MB para el ejemplo
+        ]);
 
-     
+        try {
+            $file = $request->file('excel_file');
+            $path = $file->storeAs('import_files', 'imported_file.xlsx');
+            Excel::import(new ImportClass, storage_path("app/{$path}"));
+            $importedData = (new ImportClass)->getData();
+            Storage::delete($path);
+        } catch (\Exception $e) {
+            return response()->json(['error' => 'Error durante la importación: ' . $e->getMessage()], 500);
+        }
 
-
-        return view('import', ['data' => $importedData])->with('success', 'Importación completada correctamente.');
+        return response()->json(['success' => 'Importación exitosa', 'data' => $importedData]);
     }
 }
