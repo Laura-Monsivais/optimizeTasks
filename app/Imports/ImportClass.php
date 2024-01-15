@@ -10,8 +10,12 @@ use Maatwebsite\Excel\Concerns\WithHeadingRow;
 
 class ImportClass implements ToModel, WithHeadingRow
 {
+    protected $casts = [
+        'data' => 'json',
+    ];
     public function model(array $row)
     {
-        return new TemporaryTable(['data' => $row]);
+        $jsonData = json_encode($row);
+        return new TemporaryTable(['data' => $jsonData]);
     }
 }

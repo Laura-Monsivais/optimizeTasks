@@ -3,7 +3,9 @@ import os
 import webbrowser
 
 def run_artisan_serve():
-    project_path = r'C:\Users\laura\Documents\PROYECTOS\optimizeTasks'
+    # project_path = r'C:\Users\laura\Documents\PROYECTOS\optimizeTasks'
+    project_path = r'C:\Users\samue\optimizeTasks'
+    
 
     try:
         # Cambia al directorio del proyecto
@@ -18,5 +20,5 @@ def run_artisan_serve():
 if __name__ == "__main__":
     run_artisan_serve()
     # Abre el navegador después de iniciar el servidor
-    webbrowser.get('chrome').open('http://127.0.0.1:8000')
+    webbrowser.get('brave').open('http://127.0.0.1:8000')
 
