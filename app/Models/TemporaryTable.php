@@ -10,13 +10,7 @@ class TemporaryTable extends Model
     use HasFactory;
 
     protected $table = 'temporary';
+    protected $fillable = ['data'];
 
-    protected $fillable = [
-        'data',
-    ];
-
-    public function getDataAttribute()
-    {
-        return json_decode($this->attributes['data'], true);
-    }
+ 
 }

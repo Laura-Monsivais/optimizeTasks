@@ -1,20 +1,17 @@
 <?php
+
 namespace App\Imports;
 
+use App\Models\Family;
+use App\Models\TemporaryTable;
 use Maatwebsite\Excel\Concerns\ToArray;
+use Maatwebsite\Excel\Concerns\ToModel;
+use Maatwebsite\Excel\Concerns\WithHeadingRow;
 
-class ImportClass implements ToArray
+class ImportClass implements ToModel, WithHeadingRow
 {
-    protected $data = [];
-
-    public function array(array $row)
+    public function model(array $row)
     {
-        $this->data[] = $row;
-    }
-
-    public function getData()
-    {
-        return $this->data;
+        return new TemporaryTable(['data' => $row]);
     }
 }
-
