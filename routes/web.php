@@ -16,6 +16,7 @@ use Illuminate\Support\Facades\Route;
 Route::get('/', [FamilyController::class, 'showImport'])->name('showImport');
 Route::post('/import', [FamilyController::class, 'uploadImport'])->name('uploadImport');
 Route::post('/separateSurnames', [FamilyController::class, 'separateSurnames']);
+Route::post('/address', [FamilyController::class, 'address'])->name('address');
 
 
 
