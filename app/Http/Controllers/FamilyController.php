@@ -7,15 +7,10 @@ use App\Models\Family;
 use Illuminate\Http\Request;
 use Maatwebsite\Excel\Facades\Excel;
 use App\Http\Controllers\Artisan;
+use Illuminate\Support\Facades\Validator;
 
 class FamilyController extends Controller
 {
-    public function test_console_command()
-{
-    $this->artisan('inspire')->assertExitCode(0);
-    $this->artisan('inspire')->assertSuccessful();
-    $this->artisan('inspire')->assertFailed();
-}
 
     public function showImport()
     {
@@ -28,60 +23,52 @@ class FamilyController extends Controller
         return back();
     }
 
-}
-function address($address)
-{
-    $calle = '';
-    $numeroInterior = '';
-    $numeroExterior = '';
-    $colonia = '';
 
-    $addressParts = explode(',', $address);
-
-    if (count($addressParts) >= 2) {
-        $numberStreet = trim($addressParts[0]);
-
-        // Remove leading numbers and spaces from the beginning of the street name
-        $numberStreet = preg_replace('/^\d+\s*/', '', $numberStreet);
-
-        $partsStreets = explode(' ', $numberStreet);
-
-        $calle = array_shift($partsStreets);
-
-        foreach ($partsStreets as $key => $parte) {
-            if (is_numeric($parte)) {
-                // Check for common terms like "Ext" or "Int" indicating exterior or interior
-                $nextPart = isset($partsStreets[$key + 1]) ? $partsStreets[$key + 1] : '';
-                if (is_numeric($nextPart)) {
-                    $numeroInterior = $parte;
-                    $numeroExterior = $nextPart;
-                    break;
+    public function separateAddress(Request $request)
+    {
+        $address = $request->input('address');
+        $calle = '';
+        $numeroInterior = '';
+        $numeroExterior = '';
+        $colonia = '';
+    
+        // Separar la dirección por espacios
+        $addressParts = explode(' ', $address);
+    
+        // Iterar sobre las partes de la dirección
+        foreach ($addressParts as $key => $part) {
+            // Verificar si la parte actual es numérica
+            if (is_numeric($part)) {
+                // Si hay otra parte numérica siguiente, considerarla como número interior
+                if (isset($addressParts[$key + 1]) && is_numeric($addressParts[$key + 1])) {
+                    $numeroInterior = $part;
+                    $numeroExterior = $addressParts[$key + 1];
                 } else {
-                    $numeroExterior = $parte;
+                    // Si solo hay una parte numérica, considerarla como número exterior
+                    $numeroExterior = $part;
+                    // Verificar si hay una indicación de número interior
+                    if (isset($addressParts[$key + 1]) && preg_match('/^Int$/i', $addressParts[$key + 1])) {
+                        $numeroInterior = $addressParts[$key + 2];
+                        $key += 2; // Saltar la parte de 'Int' y el número interior
+                    }
                 }
+                // Las partes anteriores a la parte numérica son la calle
+                $calle = implode(' ', array_slice($addressParts, 0, $key));
+                // Las partes posteriores a la parte numérica son la colonia
+                $colonia = implode(' ', array_slice($addressParts, $key + 2));
+                break;
             }
         }
-
-        $colonia = trim($addressParts[1]);
-    } else {
-        $calle = $address;
+    
+        return response()->json([
+            'calle' => $calle,
+            'numero_interior' => $numeroInterior,
+            'numero_exterior' => $numeroExterior,
+            'colonia' => $colonia,
+        ]);
     }
-
-    return [
-        'calle' => $calle,
-        'numero_interior' => $numeroInterior,
-        'numero_exterior' => $numeroExterior,
-        'colonia' => $colonia,
-    ];
-
-}
-
-$address = "Cerro del Peñon 5453, Valle de las Cumbres segundo sector";
-$resultado = address($address);
-print_r($resultado);
-
     /* Separar apellidos */
-function separateSurnames(Request $request)
+public function separateSurnames(Request $request)
     {
         $fullName = $request->input('fullName');
         $words = explode(' ', $fullName);
@@ -105,5 +92,116 @@ function separateSurnames(Request $request)
     }
 
     /* Validar CURP */
-function validateCURP(Request $request){};
+    public function validateCURP(Request $request) {
+        // Obtener la CURP desde la variable de la solicitud
+        $curp = $request->input('curp');
+    
+        // Verificar que la longitud de la CURP sea correcta
+        if (strlen($curp) !== 18) {
+            return response()->json(['error' => 'Longitud de CURP incorrecta'], 400);
+        }
+    
+        // Verificar el formato de la CURP con una expresión regular
+        $patronCurp = '/^[A-Z]{4}\d{6}[HM][A-Z]{5}\d{2}$/';
+        if (!preg_match($patronCurp, $curp)) {
+            return response()->json(['error' => 'Formato de CURP incorrecto'], 400);
+        }
+    
+        // Verificar la homoclave utilizando el algoritmo oficial
+        $suma = 0;
+        $caracteres = "0123456789ABCDEFGHIJKLMNÑOPQRSTUVWXYZ";
+        $diccionario = array_flip(str_split($caracteres));
+    
+        for ($i = 0; $i < 18; $i++) {
+            $valor = $diccionario[$curp[$i]];
+            if ($i < 17) {
+                $suma += $valor * (18 - $i);
+            } else {
+                $digitoVerificador = 10 - $suma % 10;
+            }
+        }
+    
+        // Devolver la respuesta fuera del bucle
+        return response()->json(['valid' => (int)$curp[17] === $digitoVerificador]);
+    }
 
+    public function Gender(Request $request)
+    {
+        $curp = $request->input('curp');
+
+        // Verificar que la CURP tiene al menos 18 caracteres
+        if (strlen($curp) < 18) {
+            return "CURP no válida";
+        }
+
+        // Obtener la séptima letra de la CURP
+        $sexo = strtoupper($curp[10]);
+ 
+        // Determinar el sexo
+        if ($sexo == 'H') {
+            return "Masculino";
+        } elseif ($sexo == 'M') {
+            return "Femenino";
+        }
+    }
+
+    public function validarNumeroTelefono(Request $request)
+    {
+        $rules = [
+            'number' => 'required|digits:10',
+        ];
+
+        $messages = [
+            'number.digits' => 'El número de teléfono debe tener exactamente 10 dígitos.',
+        ];
+
+        $validator = Validator::make($request->all(), $rules, $messages);
+
+        if ($validator->fails()) {
+            return redirect()->back()->withErrors($validator)->withInput();
+        }
+        return redirect()->back()->with('success', 'Número de teléfono válido.');
+    }
+
+    
+
+    public function NamesOrder(Request $request)
+    {
+        $nombreCompleto = $request->input('nombre');
+
+        // Divide el nombre completo en partes: nombres, apellidos
+        $partes = explode(" ", $nombreCompleto);
+
+        // Asegúrate de que haya al menos un nombre y dos apellidos
+        $nombres = isset($partes[0]) ? $partes[0] : '';
+        $apellidoPaterno = isset($partes[1]) ? $partes[1] : '';
+        $apellidoMaterno = isset($partes[2]) ? $partes[2] : '';
+
+        return view('resultado', [
+            'nombres' => $nombres,
+            'apellidoPaterno' => $apellidoPaterno,
+            'apellidoMaterno' => $apellidoMaterno,
+        ]);
+    }
+    public function LastNames($nombreCompleto) {
+        // Dividir el nombre completo en partes (nombres y apellidos)
+        $partes = explode(" ", $nombreCompleto);
+        
+        // Obtener el número total de partes
+        $numPartes = count($partes);
+        
+        // Si hay menos de 2 partes, no hay suficientes apellidos para extraer
+        if ($numPartes < 3) {
+            return "No hay suficientes apellidos para extraer";
+        }
+        
+        // Obtener los dos últimos elementos del array (últimos dos apellidos)
+        $ultimosApellidos = array_slice($partes, -2);
+        
+        // Unir los últimos dos apellidos en un string
+        $apellidos = implode(" ", $ultimosApellidos);
+        
+        return $apellidos;
+    }
+    
+}
