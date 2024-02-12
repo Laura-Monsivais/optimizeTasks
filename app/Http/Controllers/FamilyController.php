@@ -91,23 +91,17 @@ public function separateSurnames(Request $request)
         ]);
     }
 
-    /* Validar CURP */
     public function validateCURP(Request $request) {
-        // Obtener la CURP desde la variable de la solicitud
         $curp = $request->input('curp');
     
-        // Verificar que la longitud de la CURP sea correcta
         if (strlen($curp) !== 18) {
             return response()->json(['error' => 'Longitud de CURP incorrecta'], 400);
         }
-    
-        // Verificar el formato de la CURP con una expresión regular
         $patronCurp = '/^[A-Z]{4}\d{6}[HM][A-Z]{5}\d{2}$/';
         if (!preg_match($patronCurp, $curp)) {
             return response()->json(['error' => 'Formato de CURP incorrecto'], 400);
         }
     
-        // Verificar la homoclave utilizando el algoritmo oficial
         $suma = 0;
         $caracteres = "0123456789ABCDEFGHIJKLMNÑOPQRSTUVWXYZ";
         $diccionario = array_flip(str_split($caracteres));
@@ -121,7 +115,6 @@ public function separateSurnames(Request $request)
             }
         }
     
-        // Devolver la respuesta fuera del bucle
         return response()->json(['valid' => (int)$curp[17] === $digitoVerificador]);
     }
 
@@ -129,12 +122,10 @@ public function separateSurnames(Request $request)
     {
         $curp = $request->input('curp');
 
-        // Verificar que la CURP tiene al menos 18 caracteres
         if (strlen($curp) < 18) {
             return "CURP no válida";
         }
 
-        // Obtener la séptima letra de la CURP
         $sexo = strtoupper($curp[10]);
  
         // Determinar el sexo
@@ -169,10 +160,8 @@ public function separateSurnames(Request $request)
     {
         $nombreCompleto = $request->input('nombre');
 
-        // Divide el nombre completo en partes: nombres, apellidos
         $partes = explode(" ", $nombreCompleto);
 
-        // Asegúrate de que haya al menos un nombre y dos apellidos
         $nombres = isset($partes[0]) ? $partes[0] : '';
         $apellidoPaterno = isset($partes[1]) ? $partes[1] : '';
         $apellidoMaterno = isset($partes[2]) ? $partes[2] : '';
@@ -184,21 +173,16 @@ public function separateSurnames(Request $request)
         ]);
     }
     public function LastNames($nombreCompleto) {
-        // Dividir el nombre completo en partes (nombres y apellidos)
         $partes = explode(" ", $nombreCompleto);
         
-        // Obtener el número total de partes
         $numPartes = count($partes);
         
-        // Si hay menos de 2 partes, no hay suficientes apellidos para extraer
         if ($numPartes < 3) {
             return "No hay suficientes apellidos para extraer";
         }
         
-        // Obtener los dos últimos elementos del array (últimos dos apellidos)
         $ultimosApellidos = array_slice($partes, -2);
         
-        // Unir los últimos dos apellidos en un string
         $apellidos = implode(" ", $ultimosApellidos);
         
         return $apellidos;
