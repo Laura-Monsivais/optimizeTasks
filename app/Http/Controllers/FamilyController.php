@@ -11,19 +11,6 @@ use Illuminate\Support\Facades\Validator;
 
 class FamilyController extends Controller
 {
-
-    public function showImport()
-    {
-        return view('import');
-    }
-
-    public function uploadImport(Request $request)
-    {
-        Excel::import(new ImportClass, $request->file('excel_file')->store('import_files'));
-        return back();
-    }
-
-
     public function separateAddress(Request $request)
     {
         $address = $request->input('address');
