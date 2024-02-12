@@ -35,4 +35,33 @@ class PersonsController extends Controller
         );
         return response()->json(['La persona se agrego exitosamente'],200);
     }
+
+    public function validateCURP(Request $request)
+    {
+        /* Cambiar el código a inglés */
+        $curp = $request->input('curp');
+
+        if (strlen($curp) !== 18) {
+            return response()->json(['error' => 'Longitud de CURP incorrecta'], 400);
+        }
+        $patronCurp = '/^[A-Z]{4}\d{6}[HM][A-Z]{5}\d{2}$/';
+        if (!preg_match($patronCurp, $curp)) {
+            return response()->json(['error' => 'Formato de CURP incorrecto'], 400);
+        }
+
+        $suma = 0;
+        $caracteres = "0123456789ABCDEFGHIJKLMNÑOPQRSTUVWXYZ";
+        $diccionario = array_flip(str_split($caracteres));
+
+        for ($i = 0; $i < 18; $i++) {
+            $valor = $diccionario[$curp[$i]];
+            if ($i < 17) {
+                $suma += $valor * (18 - $i);
+            } else {
+                $digitoVerificador = 10 - $suma % 10;
+            }
+        }
+
+        return response()->json(['valid' => (int)$curp[17] === $digitoVerificador]);
+    }
 }

@@ -2,39 +2,45 @@
 
 namespace App\Http\Controllers;
 
-use App\Imports\ImportClass;
-use App\Models\Family;
 use Illuminate\Http\Request;
-use Maatwebsite\Excel\Facades\Excel;
-use App\Http\Controllers\Artisan;
 use Illuminate\Support\Facades\Validator;
 
 class FamilyController extends Controller
 {
 
-    public function showImport()
+    /* Ver todas las familias */
+    public function index(Request $request)
     {
-        return view('import');
     }
 
-    public function uploadImport(Request $request)
+    /* Crear nueva familia (opción para alumnos que vengan sin ID de familia) */
+    public function store(Request $request)
     {
-        Excel::import(new ImportClass, $request->file('excel_file')->store('import_files'));
-        return back();
+    }
+    
+    /* Obtener StateID (ID del estado) */
+    public function getStateID(Request $request)
+    {
     }
 
+    /* Obtener CountryID (ID del estado) */
+    public function getCountryID(Request $request)
+    {
+    }
 
+    /* Separar dirección */
     public function separateAddress(Request $request)
     {
+        /* Manejar estos campos con los del SKEL (suplirlos) */
         $address = $request->input('address');
         $calle = '';
         $numeroInterior = '';
         $numeroExterior = '';
         $colonia = '';
-    
+
         // Separar la dirección por espacios
         $addressParts = explode(' ', $address);
-    
+
         // Iterar sobre las partes de la dirección
         foreach ($addressParts as $key => $part) {
             // Verificar si la parte actual es numérica
@@ -59,7 +65,7 @@ class FamilyController extends Controller
                 break;
             }
         }
-    
+        /* Imprimir en inglés con los campos del SKEL */
         return response()->json([
             'calle' => $calle,
             'numero_interior' => $numeroInterior,
@@ -67,8 +73,9 @@ class FamilyController extends Controller
             'colonia' => $colonia,
         ]);
     }
-    /* Separar apellidos */
-public function separateSurnames(Request $request)
+
+    /* Separar apellidos  (LAURA)*/
+    public function separateSurnames(Request $request)
     {
         $fullName = $request->input('fullName');
         $words = explode(' ', $fullName);
@@ -85,39 +92,14 @@ public function separateSurnames(Request $request)
             $paternalSurname = $fullName;
             $maternalSurname = null;
         }
+        /* Modificarlo a campos de SKEL y revisar validaciones que falten */
         return response()->json([
             'paternalSurname' => $paternalSurname,
             'maternalSurname' => $maternalSurname
         ]);
     }
 
-    public function validateCURP(Request $request) {
-        $curp = $request->input('curp');
-    
-        if (strlen($curp) !== 18) {
-            return response()->json(['error' => 'Longitud de CURP incorrecta'], 400);
-        }
-        $patronCurp = '/^[A-Z]{4}\d{6}[HM][A-Z]{5}\d{2}$/';
-        if (!preg_match($patronCurp, $curp)) {
-            return response()->json(['error' => 'Formato de CURP incorrecto'], 400);
-        }
-    
-        $suma = 0;
-        $caracteres = "0123456789ABCDEFGHIJKLMNÑOPQRSTUVWXYZ";
-        $diccionario = array_flip(str_split($caracteres));
-    
-        for ($i = 0; $i < 18; $i++) {
-            $valor = $diccionario[$curp[$i]];
-            if ($i < 17) {
-                $suma += $valor * (18 - $i);
-            } else {
-                $digitoVerificador = 10 - $suma % 10;
-            }
-        }
-    
-        return response()->json(['valid' => (int)$curp[17] === $digitoVerificador]);
-    }
-
+    /* Validar Genero */
     public function Gender(Request $request)
     {
         $curp = $request->input('curp');
@@ -127,19 +109,23 @@ public function separateSurnames(Request $request)
         }
 
         $sexo = strtoupper($curp[10]);
- 
+
         // Determinar el sexo
         if ($sexo == 'H') {
-            return "Masculino";
+            return "M";
         } elseif ($sexo == 'M') {
-            return "Femenino";
+            return "F";
         }
     }
 
-    public function validarNumeroTelefono(Request $request)
+    /* Validar Teléfono */
+    public function validatePhone(Request $request)
     {
+        /* Falta quitar espacios en blanco, falta sustituir caracteres como "-",
+        Solicitar una LADA y agregarla en caso de que el número sea menor a 8 digitos,
+        validar que sea a 10 Digitos, si es mayor a 10 no se considera */
         $rules = [
-            'number' => 'required|digits:10',
+            'number' => 'required',
         ];
 
         $messages = [
@@ -151,41 +137,7 @@ public function separateSurnames(Request $request)
         if ($validator->fails()) {
             return redirect()->back()->withErrors($validator)->withInput();
         }
+        /* Regresar el número */
         return redirect()->back()->with('success', 'Número de teléfono válido.');
     }
-
-    
-
-    public function NamesOrder(Request $request)
-    {
-        $nombreCompleto = $request->input('nombre');
-
-        $partes = explode(" ", $nombreCompleto);
-
-        $nombres = isset($partes[0]) ? $partes[0] : '';
-        $apellidoPaterno = isset($partes[1]) ? $partes[1] : '';
-        $apellidoMaterno = isset($partes[2]) ? $partes[2] : '';
-
-        return view('resultado', [
-            'nombres' => $nombres,
-            'apellidoPaterno' => $apellidoPaterno,
-            'apellidoMaterno' => $apellidoMaterno,
-        ]);
-    }
-    public function LastNames($nombreCompleto) {
-        $partes = explode(" ", $nombreCompleto);
-        
-        $numPartes = count($partes);
-        
-        if ($numPartes < 3) {
-            return "No hay suficientes apellidos para extraer";
-        }
-        
-        $ultimosApellidos = array_slice($partes, -2);
-        
-        $apellidos = implode(" ", $ultimosApellidos);
-        
-        return $apellidos;
-    }
-    
 }
