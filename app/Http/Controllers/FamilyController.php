@@ -2,26 +2,91 @@
 
 namespace App\Http\Controllers;
 
-use App\Imports\ImportClass;
+use App\Models\Country;
 use App\Models\Family;
+use App\Models\State;
+use App\Models\Students;
+use Faker\Core\Number;
 use Illuminate\Http\Request;
-use Maatwebsite\Excel\Facades\Excel;
-use App\Http\Controllers\Artisan;
 use Illuminate\Support\Facades\Validator;
 
 class FamilyController extends Controller
 {
+
+    /* Ver todas las familias */
+    public function index(Request $request)
+    {
+        $family = Family::all();
+        return response()->json( $family );
+    }
+
+    /* Crear nueva familia (opción para alumnos que vengan sin ID de familia) */
+    public function store(Request $request)
+    {
+    $IDStudents = $request->input('students');
+
+    $alumnosConFamilia = Students::whereIn('ID', $IDStudents)->whereNotNull('FamilyID')->exists();
+
+    if ($alumnosConFamilia) {
+        return response()->json(['mensaje' => 'El alumnos ya tienen una familia.'], 422);
+    }
+    $NewFamily = Students::create();
+
+    Students::whereIn('ID', $IDStudents)->update(['FamilyID' => $NewFamily->id]);
+
+    return response()->json(['mensaje' => 'Nueva familia creada con éxito.']);
+
+    }
+    
+    /* Obtener StateID (ID del estado) */
+    public function getStateID(Request $request, $ID)
+    {
+        $ID = $request->input('ID');
+
+        // Verifica si el ID es válido
+        if (!$ID) {
+            return response()->json(['mensaje' => 'ID no proporcionado en la solicitud'], 400);
+        }
+        $state = State::find($ID);
+    
+        if ($state) {
+            return response()->json(['StateID' => $state->ID]);
+        } else {
+            return response()->json(['mensaje' => 'Registro no encontrado'], 404);
+        }
+    }
+
+    /* Obtener CountryID (ID del estado) */
+    public function getCountryID(Request $request,$ID)
+    {
+        $ID = $request->input('ID');
+
+        // Verifica si el ID es válido
+        if (!$ID) {
+            return response()->json(['mensaje' => 'ID no proporcionado en la solicitud'], 400);
+        }
+        $Country = Country::find($ID);
+    
+        if ($Country) {
+            return response()->json(['CountryID' => $Country->ID]);
+        } else {
+            return response()->json(['mensaje' => 'Registro no encontrado'], 404);
+        }
+    }
+
+    /* Separar dirección */
     public function separateAddress(Request $request)
     {
+        /* Manejar estos campos con los del SKEL (suplirlos) */
         $address = $request->input('address');
         $calle = '';
         $numeroInterior = '';
         $numeroExterior = '';
         $colonia = '';
-    
+
         // Separar la dirección por espacios
         $addressParts = explode(' ', $address);
-    
+
         // Iterar sobre las partes de la dirección
         foreach ($addressParts as $key => $part) {
             // Verificar si la parte actual es numérica
@@ -46,7 +111,7 @@ class FamilyController extends Controller
                 break;
             }
         }
-    
+        /* Imprimir en inglés con los campos del SKEL */
         return response()->json([
             'calle' => $calle,
             'numero_interior' => $numeroInterior,
@@ -54,8 +119,9 @@ class FamilyController extends Controller
             'colonia' => $colonia,
         ]);
     }
-    /* Separar apellidos */
-public function separateSurnames(Request $request)
+
+    /* Separar apellidos  (LAURA)*/
+    public function separateSurnames(Request $request)
     {
         $fullName = $request->input('fullName');
         $words = explode(' ', $fullName);
@@ -72,61 +138,21 @@ public function separateSurnames(Request $request)
             $paternalSurname = $fullName;
             $maternalSurname = null;
         }
+        /* Modificarlo a campos de SKEL y revisar validaciones que falten */
         return response()->json([
             'paternalSurname' => $paternalSurname,
             'maternalSurname' => $maternalSurname
         ]);
     }
 
-    public function validateCURP(Request $request) {
-        $curp = $request->input('curp');
-    
-        if (strlen($curp) !== 18) {
-            return response()->json(['error' => 'Longitud de CURP incorrecta'], 400);
-        }
-        $patronCurp = '/^[A-Z]{4}\d{6}[HM][A-Z]{5}\d{2}$/';
-        if (!preg_match($patronCurp, $curp)) {
-            return response()->json(['error' => 'Formato de CURP incorrecto'], 400);
-        }
-    
-        $suma = 0;
-        $caracteres = "0123456789ABCDEFGHIJKLMNÑOPQRSTUVWXYZ";
-        $diccionario = array_flip(str_split($caracteres));
-    
-        for ($i = 0; $i < 18; $i++) {
-            $valor = $diccionario[$curp[$i]];
-            if ($i < 17) {
-                $suma += $valor * (18 - $i);
-            } else {
-                $digitoVerificador = 10 - $suma % 10;
-            }
-        }
-    
-        return response()->json(['valid' => (int)$curp[17] === $digitoVerificador]);
-    }
-
-    public function Gender(Request $request)
+    /* Validar Teléfono */
+    public function validatePhone(Request $request)
     {
-        $curp = $request->input('curp');
-
-        if (strlen($curp) < 18) {
-            return "CURP no válida";
-        }
-
-        $sexo = strtoupper($curp[10]);
- 
-        // Determinar el sexo
-        if ($sexo == 'H') {
-            return "Masculino";
-        } elseif ($sexo == 'M') {
-            return "Femenino";
-        }
-    }
-
-    public function validarNumeroTelefono(Request $request)
-    {
+        /* Falta quitar espacios en blanco, falta sustituir caracteres como "-",
+        Solicitar una LADA y agregarla en caso de que el número sea menor a 8 digitos,
+        validar que sea a 10 Digitos, si es mayor a 10 no se considera */
         $rules = [
-            'number' => 'required|digits:10',
+            'number' => 'required',
         ];
 
         $messages = [
@@ -135,44 +161,13 @@ public function separateSurnames(Request $request)
 
         $validator = Validator::make($request->all(), $rules, $messages);
 
+        $numero = $request->input('numero');
+        $Number = str_replace(' ', '', $numero);
+
         if ($validator->fails()) {
             return redirect()->back()->withErrors($validator)->withInput();
         }
+        /* Regresar el número */
         return redirect()->back()->with('success', 'Número de teléfono válido.');
     }
-
-    
-
-    public function NamesOrder(Request $request)
-    {
-        $nombreCompleto = $request->input('nombre');
-
-        $partes = explode(" ", $nombreCompleto);
-
-        $nombres = isset($partes[0]) ? $partes[0] : '';
-        $apellidoPaterno = isset($partes[1]) ? $partes[1] : '';
-        $apellidoMaterno = isset($partes[2]) ? $partes[2] : '';
-
-        return view('resultado', [
-            'nombres' => $nombres,
-            'apellidoPaterno' => $apellidoPaterno,
-            'apellidoMaterno' => $apellidoMaterno,
-        ]);
-    }
-    public function LastNames($nombreCompleto) {
-        $partes = explode(" ", $nombreCompleto);
-        
-        $numPartes = count($partes);
-        
-        if ($numPartes < 3) {
-            return "No hay suficientes apellidos para extraer";
-        }
-        
-        $ultimosApellidos = array_slice($partes, -2);
-        
-        $apellidos = implode(" ", $ultimosApellidos);
-        
-        return $apellidos;
-    }
-    
 }
