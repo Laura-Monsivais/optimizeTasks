@@ -21,13 +21,32 @@ class FamilyController extends Controller
     }
 
     /* Crear nueva familia (opción para alumnos que vengan sin ID de familia) */
-    public function store(Request $request)
+    public function store(Request $request, $ID)
+    {
+        $student = Students::find($ID);
+        // Verificar si el alumno ya tiene un ID de familia
+        if ($student->FamilyID === null) {
+            // Crear una nueva familia utilizando los apellidos del alumno
+            $Family = new Family();
+            $Family->LastName1 = $student->LastName1;
+            $Family->LastName2 = $student->LastName2;
+            $Family->save();
+            // Asignar el ID de la nueva familia al alumno
+            $student->FamilyID = $Family->ID;
+            $student->save();
+            return "Se ha creado una nueva familia para el alumno.";
+        } else {
+            return "El alumno ya tiene asignado un ID de familia.";
+        }
+
+    }
+
+    public function verificationFamID(Request $request)
     {
     $IDStudents = $request->input('students');
+    $StudentsFam = Students::whereIn('ID', $IDStudents)->whereNotNull('FamilyID')->exists();
 
-    $alumnosConFamilia = Students::whereIn('ID', $IDStudents)->whereNotNull('FamilyID')->exists();
-
-    if ($alumnosConFamilia) {
+    if ($StudentsFam) {
         return response()->json(['mensaje' => 'El alumnos ya tienen una familia.'], 422);
     }
     $NewFamily = Students::create();
@@ -77,17 +96,16 @@ class FamilyController extends Controller
     /* Separar dirección */
     public function separateAddress(Request $request)
     {
-        /* Manejar estos campos con los del SKEL (suplirlos) */
+        
         $address = $request->input('address');
-        $calle = '';
-        $numeroInterior = '';
-        $numeroExterior = '';
-        $colonia = '';
-
+        $calle = 'Address1';
+        $numeroInterior = 'IntNum';
+        $numeroExterior = 'ExtNum';
+        $colonia = 'Address2';
+                
         // Separar la dirección por espacios
         $addressParts = explode(' ', $address);
 
-        // Iterar sobre las partes de la dirección
         foreach ($addressParts as $key => $part) {
             // Verificar si la parte actual es numérica
             if (is_numeric($part)) {
@@ -118,6 +136,7 @@ class FamilyController extends Controller
             'numero_exterior' => $numeroExterior,
             'colonia' => $colonia,
         ]);
+    
     }
 
     /* Separar apellidos  (LAURA)*/
@@ -146,28 +165,39 @@ class FamilyController extends Controller
     }
 
     /* Validar Teléfono */
-    public function validatePhone(Request $request)
-    {
-        /* Falta quitar espacios en blanco, falta sustituir caracteres como "-",
-        Solicitar una LADA y agregarla en caso de que el número sea menor a 8 digitos,
-        validar que sea a 10 Digitos, si es mayor a 10 no se considera */
-        $rules = [
-            'number' => 'required',
-        ];
+    public function validateNumber(Request $request)
+{
+    $rules = [
+        'number' => 'required|numeric',
+    ];
 
-        $messages = [
-            'number.digits' => 'El número de teléfono debe tener exactamente 10 dígitos.',
-        ];
+    $messages = [
+        'number.required' => 'El número de teléfono es obligatorio.',
+        'number.numeric' => 'El número de teléfono debe ser un valor numérico.',
+    ];
 
-        $validator = Validator::make($request->all(), $rules, $messages);
+    $validator = Validator::make($request->all(), $rules, $messages);
 
-        $numero = $request->input('numero');
-        $Number = str_replace(' ', '', $numero);
-
-        if ($validator->fails()) {
-            return redirect()->back()->withErrors($validator)->withInput();
-        }
-        /* Regresar el número */
-        return redirect()->back()->with('success', 'Número de teléfono válido.');
+    if ($validator->fails()) {
+        return redirect()->back()->withErrors($validator)->withInput();
     }
+
+    $numero = $request->input('number');
+
+    $numero = preg_replace("/[^0-9]/", "", $numero);
+
+    $lada = $request->input('lada');
+    if (strlen($numero) < 8 && is_numeric($lada)) {
+        $numero = $lada . $numero;
+    }
+
+    if (strlen($numero) !== 10) {
+         return redirect()->back()->withErrors(['number' => 'Deben de ser 10 numeros'])->withInput();
+    }
+
+    if (strlen($numero) < 10) {
+        return redirect()->back()->withErrors(['number' => 'Número de teléfono inválido.'])->withInput();
+    }
+    return redirect()->back()->with('success', 'Número de teléfono válido: ' . $numero);
+}
 }
