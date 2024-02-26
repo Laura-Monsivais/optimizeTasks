@@ -21,13 +21,13 @@ class StudentsController extends Controller
         return $programID;
     }
 
-    public function registerStudents(Request $request)
+    public function store(Request $request)
     {
 
         $request->validate([
             'Name' => 'required',
             'Last' => 'required',
-            'CURP' =>'CURP',
+            'CURP' => 'CURP',
             'Phone1' => 'max:10'
         ]);
 
@@ -39,15 +39,14 @@ class StudentsController extends Controller
                 'Phone1' => $request->input('Phone1')
             ]
         );
-        return response()->json(['El alumno se agrego exitosamente'],200);
+        return response()->json(['El alumno se agrego exitosamente'], 200);
     }
-    
-    public function StudentsCurp(Request $request)
+
+    public function validateCurp($curp_)
     {
         /* Cambiar el código a inglés */
-        $curp = $request->input('curp');
-
-        if (strlen($curp) !== 18) {
+        $curp = $curp_;
+        if (strlen($curp) > 18) {
             return response()->json(['error' => 'Longitud de CURP incorrecta'], 400);
         }
         $patronCurp = '/^[A-Z]{4}\d{6}[HM][A-Z]{5}\d{2}$/';
@@ -71,7 +70,7 @@ class StudentsController extends Controller
         return response()->json(['valid' => (int)$curp[17] === $digitoVerificador]);
     }
 
-    public function StudentsGender(Request $request)
+    public function validateGender(Request $request)
     {
         $curp = $request->input('curp');
 
@@ -88,5 +87,4 @@ class StudentsController extends Controller
             return "F";
         }
     }
-  
 }

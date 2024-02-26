@@ -14,20 +14,20 @@ return new class extends Migration
         //
         Schema::create('families', function(Blueprint $table){
 
-            $table->id();
+            $table->id()->autoIncrement();
             $table->string('LastName1');
             $table->string('LastName2');
-            $table->string('Address1');
-            $table->integer('ExtNum');
+            $table->string('Address1')->nullable();
+            $table->integer('ExtNum')->nullable();
             $table->integer('IntNum')->nullable();
-            $table->string('Address2');
-            $table->string('City');
-            $table->string('County');
-            $table->integer('StateID');
-            $table->integer('CodigoPostal');
-            $table->integer('CountryID');
+            $table->string('Address2')->nullable();
+            $table->string('City')->nullable();
+            $table->string('County')->nullable();
+            $table->integer('StateID')->nullable();
+            $table->integer('CodigoPostal')->nullable();
+            $table->integer('CountryID')->nullable();
             $table->integer('Phone1')->nullable();
-            $table->integer('Phone2');
+            $table->integer('Phone2')->nullable();
             $table->timestamps();
 
             Schema::create('StateID', function (Blueprint $table) {
