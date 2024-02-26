@@ -20,18 +20,16 @@ class FamilyController extends Controller
         return response()->json( $family );
     }
 
-    /* Crear nueva familia (opción para alumnos que vengan sin ID de familia) */
     public function store(Request $request, $ID)
     {
         $student = Students::find($ID);
-        // Verificar si el alumno ya tiene un ID de familia
         if ($student->FamilyID === null) {
             // Crear una nueva familia utilizando los apellidos del alumno
             $Family = new Family();
             $Family->LastName1 = $student->LastName1;
             $Family->LastName2 = $student->LastName2;
             $Family->save();
-            // Asignar el ID de la nueva familia al alumno
+            
             $student->FamilyID = $Family->ID;
             $student->save();
             return "Se ha creado una nueva familia para el alumno.";

@@ -25,7 +25,7 @@ Route::post('/store', [FamilyController::class, 'store'])->name('store');
 Route::post('/getStateID', [FamilyController::class, 'getStateID'])->name('getStateID');
 Route::post('/getCountryID', [FamilyController::class, 'getCountryID'])->name('getCountryID');
 Route::post('/index', [FamilyController::class, 'index'])->name('index');
-Route::post('/validatePhone', [FamilyController::class, 'phone'])->name('validatePhone');
+Route::post('/validateNumber', [FamilyController::class, 'validateNumber'])->name('validateNumber');
 Route::post('/verificationFamID', [FamilyController::class, 'verificationFamID'])->name('verificationFamID');
 
 Route::post('/GenderStudents', [StudentsController::class, 'GenderStudents'])->name('S_Gender');
