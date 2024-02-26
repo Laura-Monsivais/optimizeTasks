@@ -19,20 +19,30 @@ use Illuminate\Support\Facades\Route;
 Route::get('/', [MainController::class, 'showImport'])->name('showImport');
 Route::post('/import', [MainController::class, 'uploadImport'])->name('uploadImport');
 
-Route::post('/separateSurnames', [FamilyController::class, 'separateSurnames']);
-Route::post('/separateAddress', [FamilyController::class, 'separateAddress'])->name('address');
-Route::post('/store', [FamilyController::class, 'store'])->name('store');
-Route::post('/getStateID', [FamilyController::class, 'getStateID'])->name('getStateID');
-Route::post('/getCountryID', [FamilyController::class, 'getCountryID'])->name('getCountryID');
-Route::post('/index', [FamilyController::class, 'index'])->name('index');
-Route::post('/validateNumber', [FamilyController::class, 'validateNumber'])->name('validateNumber');
-Route::post('/verificationFamID', [FamilyController::class, 'verificationFamID'])->name('verificationFamID');
 
-Route::post('/GenderStudents', [StudentsController::class, 'GenderStudents'])->name('S_Gender');
-Route::post('/StudentsCurp', [StudentsController::class, 'StudentsCurp'])->name('S_curp');
+/* Familias */
+Route::get('/families', [FamilyController::class, 'index']);
+Route::post('/families/create', [FamilyController::class, 'store']);
+Route::post('/families/separateSurnames', [FamilyController::class, 'separateSurnames']);
+Route::post('/families/separateAddress', [FamilyController::class, 'separateAddress']);
+Route::get('/families/{StateID}', [FamilyController::class, 'getStateID']);
+Route::get('/families/{CountryID}', [FamilyController::class, 'getCountryID']);
+Route::post('/families/validatePhone', [FamilyController::class, 'validateNumber']);
+Route::post('/families/verificationFamID', [FamilyController::class, 'verificationFamID']);
 
-Route::post('/PersonsGender', [PersonsController::class, 'PersonsGender'])->name('P_Gender');
-Route::post('/PersonsCurp', [PersonsController::class, 'PersonsCurp'])->name('P_curp');
+
+/* Alumnos */
+Route::get('/students', [StudentsController::class, 'index']);
+Route::post('/students/create', [StudentsController::class, 'store']);
+Route::post('/students/validateGender', [StudentsController::class, 'validateGender']);
+Route::post('/students/validateCurp', [StudentsController::class, 'validateCurp']);
+
+
+/* Personas */
+Route::get('/persons', [PersonsController::class, 'index']);
+Route::post('/persons/create', [PersonsController::class, 'store']);
+Route::post('/persons/validateGender', [PersonsController::class, 'validateGender']);
+Route::post('/persons/validateCurp', [PersonsController::class, 'validateCurp']);
 
 
 
