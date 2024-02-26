@@ -5,6 +5,13 @@ namespace App\Http\Controllers;
 use App\Models\MaritalStatus;
 use App\Models\Persons;
 use Illuminate\Http\Request;
+use App\Models\Country;
+use App\Models\Family;
+use App\Models\State;
+use App\Models\Students;
+use Faker\Core\Number;
+use Illuminate\Support\Facades\Validator;
+
 
 class PersonsController extends Controller
 {
@@ -15,8 +22,24 @@ class PersonsController extends Controller
         //return response()->json( $family );//
     }
 
-    public function store(Request $request)
+    public function store(Request $request, $ID)
     {
+        
+        $Persons = Persons::find($ID);
+        // Verificar si la persona ya tiene un ID de familia
+        if ($Persons->FamilyID === null) {
+            // Crear una nueva familia utilizando los apellidos de la persona
+            $Family = new Family();
+            $Family->LastName1 = $Persons->Last1;
+            $Family->LastName2 = $Persons->Last2;
+            $Family->save();
+            
+            $Persons->FamilyID = $Family->ID;
+            $Persons->save();
+            return "Se ha creado una nueva familia.";
+        } else {
+            return "Ya se tiene asignado un ID de familia.";
+        }
 
         $request->validate([
             'Name' => 'required',

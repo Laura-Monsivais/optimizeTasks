@@ -28,8 +28,8 @@ class FamilyController extends Controller
         if ($student->FamilyID === null) {
             // Crear una nueva familia utilizando los apellidos del alumno
             $Family = new Family();
-            $Family->LastName1 = $student->Last;
-            $Family->LastName2 = $student->Last2;
+            $Family->LastName1 = $student->LastName1;
+            $Family->LastName2 = $student->LastName2;
             $Family->save();
             
             $student->FamilyID = $Family->ID;
