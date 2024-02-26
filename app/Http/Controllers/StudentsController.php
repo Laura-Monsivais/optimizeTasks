@@ -22,45 +22,22 @@ class StudentsController extends Controller
         //return response()->json( $family );//
     }
 
-    public function getProgramID($id)
-    {
-        $programID = Program::find($id);
-        return $programID;
-    }
 
     public function store(Request $request, $ID)
     {
         $student = Students::find($ID);
-        // Verificar si el alumno ya tiene un ID de familia
-        if ($student->FamilyID === null) {
+        // Verificar si el alumno no tiene un id Principal
+        if ($student->ID === null) {
             // Crear una nueva familia utilizando los apellidos del alumno
-            $Family = new Family();
-            $Family->LastName1 = $student->Last1;
-            $Family->LastName2 = $student->Last2;
-            $Family->save();
-            
-            $student->FamilyID = $Family->ID;
-            $student->save();
-            return "Se ha creado una nueva familia para el alumno.";
+            $student->Name = $request->input('Name');
+            $student->Last = $request->input('Last');
+            $student->Last2 = $request->input('Last2');
+            $student->curp = $request->input('curp');
+            $student->Gender = $this->validateGender($request->input('curp'));
+            return "Se un nuevo alumno.";
         } else {
-            return "El alumno ya tiene asignado un ID de familia.";
+            return "El alumno ya existe.";
         }
-        
-        $request->validate([
-            'Name' => 'required',
-            'Last' => 'required',
-            'CURP' => 'CURP',
-            'Phone1' => 'max:10'
-        ]);
-
-        Students::create(
-            [
-                'Name' => $request->input('Name'),
-                'Last' => $request->input('Last'),
-                'CURP' => $request->input('CURP'),
-                'Phone1' => $request->input('Phone1')
-            ]
-        );
         return response()->json(['El alumno se agrego exitosamente'], 200);
     }
 
@@ -108,5 +85,27 @@ class StudentsController extends Controller
         } elseif ($sexo == 'M') {
             return "F";
         }
+    }
+
+    public function getProgramID($id)
+    {
+        $programID = Program::find($id);
+        return $programID;
+    }
+
+    public function MaritalStatusID($id)
+    {
+    }
+
+    public function BirthPlaceID($id)
+    {
+    }
+
+    public function NationalityID($id)
+    {
+    }
+
+    public function ReligionID($id)
+    {
     }
 }

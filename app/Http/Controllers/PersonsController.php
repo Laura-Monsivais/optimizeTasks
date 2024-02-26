@@ -24,38 +24,17 @@ class PersonsController extends Controller
 
     public function store(Request $request, $ID)
     {
-        
+
         $Persons = Persons::find($ID);
         // Verificar si la persona ya tiene un ID de familia
-        if ($Persons->FamilyID === null) {
+        if ($Persons->ID === null) {
             // Crear una nueva familia utilizando los apellidos de la persona
-            $Family = new Family();
-            $Family->LastName1 = $Persons->Last1;
-            $Family->LastName2 = $Persons->Last2;
-            $Family->save();
-            
-            $Persons->FamilyID = $Family->ID;
-            $Persons->save();
+
             return "Se ha creado una nueva familia.";
         } else {
             return "Ya se tiene asignado un ID de familia.";
         }
 
-        $request->validate([
-            'Name' => 'required',
-            'Last' => 'required',
-            'CURP' => 'CURP',
-            'Phone1' => 'max:10'
-        ]);
-
-        Persons::create(
-            [
-                'Name' => $request->input('Name'),
-                'Last' => $request->input('Last'),
-                'CURP' => $request->input('CURP'),
-                'Phone1' => $request->input('Phone1')
-            ]
-        );
         return response()->json(['La persona se agrego exitosamente'], 200);
     }
 
