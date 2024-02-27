@@ -22,7 +22,7 @@ Route::post('/import', [MainController::class, 'uploadImport'])->name('uploadImp
 
 /* Familias */
 Route::get('/families', [FamilyController::class, 'index']);
-Route::post('/families/create', [FamilyController::class, 'store']);
+Route::post('/families/create/{ID}', [FamilyController::class, 'store']);
 Route::post('/families/separateSurnames', [FamilyController::class, 'separateSurnames']);
 Route::post('/families/separateAddress', [FamilyController::class, 'separateAddress']);
 Route::get('/families/getStateID/{StateID}', [FamilyController::class, 'getStateID']);
