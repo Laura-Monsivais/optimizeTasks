@@ -27,12 +27,24 @@ class PersonsController extends Controller
 
         $Persons = Persons::find($ID);
         // Verificar si la persona ya tiene un ID de familia
-        if ($Persons->ID === null) {
-            // Crear una nueva familia utilizando los apellidos de la persona
+        if ($Persons->ID === null) {      // Crear una nueva familia utilizando los apellidos de la persona
+            $Persons->Name = $request->input('Name');
+            $Persons->Last = $request->input('Last');
+            $Persons->Last2 = $request->input('Last2');
+            $Persons->curp = $request->input('curp');
+            $Persons->Gender = $this->validateGender($request->input('curp'));
+            $Persons->BirthDate = $request->input('BirthDate');
+            $Persons->BirthPlaceID = $request->input('BirthPlaceID');
+            $Persons->BirthCity = $request->input('BirthCity');
+            $Persons->CellPhone = $request->input('CellPhone');
+            $Persons->PrimaryEmail = $request->input('PrimaryEmail');
+            $Persons->MaritalStatusID = $request->input('MaritalStatusID');
+            $Persons->WorkPlace = $request->input('WorkPlace');
+            $Persons->WorkJob = $request->input('WorkJob');
 
-            return "Se ha creado una nueva familia.";
+            return "";
         } else {
-            return "Ya se tiene asignado un ID de familia.";
+            return "Ya existe un alumno con esa ID";
         }
 
         return response()->json(['La persona se agrego exitosamente'], 200);

@@ -34,6 +34,17 @@ class StudentsController extends Controller
             $student->Last2 = $request->input('Last2');
             $student->curp = $request->input('curp');
             $student->Gender = $this->validateGender($request->input('curp'));
+            $student->MaritalStatusID = $request->input('MaritalStatusID');
+            $student->BirthDate = $request->input('BirthDate');
+            $student->BirthCity = $request->input('BirthCity');
+            $student->BirthPlaceID = $request->input('BirthPlaceID');
+            $student->NationalityID = $request->input('NationalityID');
+            $student->ReligionID = $request->input('CellPhone');
+            $student->PrimaryEMail = $request->input('PrimaryEMail');
+            $student->ProgramID = $request->input('ProgramID');
+            $student->ReligionID = $request->input('TermID');
+            $student->PrimaryEMail = $request->input('ClassLevelID');
+            $student->ProgramID = $request->input('GroupID');
             return "Se un nuevo alumno.";
         } else {
             return "El alumno ya existe.";
@@ -95,17 +106,25 @@ class StudentsController extends Controller
 
     public function MaritalStatusID($id)
     {
+        $MaritalStatusID = Program::find($id);
+        return $MaritalStatusID;
     }
 
     public function BirthPlaceID($id)
     {
+        $BirthPlaceID = Program::find($id);
+        return $BirthPlaceID;
     }
 
     public function NationalityID($id)
     {
+        $NationalityID = Program::find($id);
+        return $NationalityID;
     }
 
     public function ReligionID($id)
     {
+        $ReligionID = Program::find($id);
+        return $ReligionID;
     }
 }
