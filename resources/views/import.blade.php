@@ -1,4 +1,4 @@
-@if(session('success'))
+<!-- @if(session('success'))
     <div>{{ session('success') }}</div>
 @endif
 
@@ -6,7 +6,7 @@
     <div>Los siguientes datos se han importado:</div>
     <ul>
         @foreach($importedData as $data)
-            <li>{{ $data }}</li> <!-- Ajusta esto según la estructura de tus datos importados -->
+            <li>{{ $data }}</li>
         @endforeach
     </ul>
 @endif
@@ -14,7 +14,7 @@
 @if(session('error'))
     <div>{{ session('error') }}</div>
 @endif
-
+ -->
 <form action="{{ route('uploadImport') }}" method="POST" enctype="multipart/form-data">
     @csrf
     <input type="file" name="excel_file">

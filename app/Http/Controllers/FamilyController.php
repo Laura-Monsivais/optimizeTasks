@@ -172,25 +172,25 @@ class FamilyController extends Controller
         $validator = Validator::make($request->all(), $rules, $messages);
 
         if ($validator->fails()) {
-            return redirect()->back()->withErrors($validator)->withInput();
+            return response()->json(['error' => $validator], 404);
         }
 
-        $numero = $request->input('number');
+        $number = $request->input('number');
 
-        $numero = preg_replace("/[^0-9]/", "", $numero);
+        $number = preg_replace("/[^0-9]/", "", $number);
 
         $lada = $request->input('lada');
-        if (strlen($numero) < 8 && is_numeric($lada)) {
-            $numero = $lada . $numero;
+        if (strlen($number) < 8 && is_numeric($lada)) {
+            $number = $lada . $number;
         }
 
-        if (strlen($numero) !== 10) {
-            return redirect()->back()->withErrors(['number' => 'Deben de ser 10 numeros'])->withInput();
+        if (strlen($number) !== 10) {
+            return response()->json(['error' => 'Deben de ser 10 numeros'], 404);
         }
 
-        if (strlen($numero) < 10) {
-            return redirect()->back()->withErrors(['number' => 'Número de teléfono inválido.'])->withInput();
+        if (strlen($number) < 10) {
+            return response()->json(['error' => 'Número de teléfono inválido.'], 404);
         }
-        return redirect()->back()->with('success', 'Número de teléfono válido: ' . $numero);
+        return response()->json(['success' => 'Número de teléfono válido: ' . $number], 200);
     }
 }
