@@ -58,18 +58,15 @@ class FamilyController extends Controller
     /* Obtener StateID (ID del estado) */
     public function getStateID($stateID)
     {
-        try {
-            // Verifica si el ID es válido
-            if (!$stateID) {
-                return response()->json(['mensaje' => 'ID no proporcionado en la solicitud'], 400);
-            }
-    
-            // Utiliza findOrFail para buscar el estado por ID
-            $state = State::findOrFail($stateID);
-    
-            return response()->json(['StateID' => $state->ID]);
-        } catch (\Illuminate\Database\Eloquent\ModelNotFoundException $e) {
-            // Captura la excepción y devuelve un mensaje de error
+        // Verifica si el ID es válido
+        if (!$stateID) {
+            return response()->json(['mensaje' => 'ID no proporcionado en la solicitud'], 400);
+        }
+        $state = State::find($stateID);
+
+        if ($state) {
+            return response()->json(['StateID' => $state->Name]);
+        } else {
             return response()->json(['mensaje' => 'Registro no encontrado'], 404);
         }
     }
@@ -84,7 +81,7 @@ class FamilyController extends Controller
         $Country = Country::find($CountryID);
 
         if ($Country) {
-            return response()->json(['CountryID' => $Country->ID]);
+            return response()->json(['CountryID' => $Country->Name]);
         } else {
             return response()->json(['mensaje' => 'Registro no encontrado'], 404);
         }

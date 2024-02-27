@@ -14,23 +14,24 @@ return new class extends Migration
         Schema::create('students', function(Blueprint $table){
 
             $table->id();
+            $table->string('FamilyID')->nullable();
             $table->string('Name');
             $table->string('Last');
-            $table->string('Las2');
+            $table->string('Last2');
             $table->char('Gender');
             $table->string('CURP');
-            $table->string('MaritalStatusID');
-            $table->date('BirthDate');
-            $table->string('BirthCity');
-            $table->integer('BirthPlaceID');
-            $table->integer('ReligionID');
-            $table->string('PrimaryEMail');
-            $table->integer('CellPhone');
-            $table->integer('NationalityID');
-            $table->integer('ProgramID');
-            $table->integer('TermID');
-            $table->integer('ClassLevelID');
-            $table->integer('GroupID');
+            $table->string('MaritalStatusID')->nullable();
+            $table->date('BirthDate')->nullable();
+            $table->string('BirthCity')->nullable();
+            $table->integer('BirthPlaceID')->nullable();
+            $table->integer('ReligionID')->nullable();
+            $table->string('PrimaryEMail')->nullable();
+            $table->integer('CellPhone')->nullable();
+            $table->integer('NationalityID')->nullable();
+            $table->integer('ProgramID')->nullable();
+            $table->integer('TermID')->nullable();
+            $table->integer('ClassLevelID')->nullable();
+            $table->integer('GroupID')->nullable();
             $table->timestamps();
 
 /*             Schema::create('MaritalStatusID', function (Blueprint $table) {
