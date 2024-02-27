@@ -21,24 +21,32 @@ class FamilyController extends Controller
     }
 
     /* Crear nueva familia (opción para alumnos que vengan sin ID de familia) */
-    public function store($FamilyID)
+    public function store($studentId)
     {
-        $student = Students::where('FamilyID', $FamilyID)->first();
-        // Verificar si el alumno ya tiene un ID de familia
-        if ($student->FamilyID === null) {
+        $student = Students::find($studentId);
+        if (!$student) {
+            return "El alumno no existe.";
+        }
+    
+        if (!$student->FamilyID) {
             // Crear una nueva familia utilizando los apellidos del alumno
-            $Family = new Family();
-            $Family->LastName1 = $student->Last;
-            $Family->LastName2 = $student->Last2;
-            $Family->save();
-
-            $student->FamilyID = $Family->ID;
-            $student->save();
-            return "Se ha creado una nueva familia para el alumno.";
+            $family = new Family();
+            $family->LastName1 = $student->Last;
+            $family->LastName2 = $student->Last2;
+    
+            try {
+                $family->save();
+                $student->FamilyID = $family->ID;
+                $student->save();
+                return response()->json(['success' => 'Se ha creado una nueva familia para el alumno.'], 200);
+            } catch (\Exception $e) {
+                return "Error al crear la familia: " . $e->getMessage();
+            }
         } else {
-            return "El alumno ya tiene asignado un ID de familia.";
+            return response()->json(['error' => 'El alumno ya tiene asignado un ID de familia.'], 422);
         }
     }
+    
 
     public function verificationFamID(Request $request)
     {
