@@ -1,7 +1,18 @@
-<!-- resources/views/import.blade.php -->
-
 @if(session('success'))
     <div>{{ session('success') }}</div>
+@endif
+
+@if(isset($importedData))
+    <div>Los siguientes datos se han importado:</div>
+    <ul>
+        @foreach($importedData as $data)
+            <li>{{ $data }}</li> <!-- Ajusta esto según la estructura de tus datos importados -->
+        @endforeach
+    </ul>
+@endif
+
+@if(session('error'))
+    <div>{{ session('error') }}</div>
 @endif
 
 <form action="{{ route('uploadImport') }}" method="POST" enctype="multipart/form-data">
