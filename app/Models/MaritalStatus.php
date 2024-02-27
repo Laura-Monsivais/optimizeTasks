@@ -9,7 +9,7 @@ class MaritalStatus extends Model
 {
     use HasFactory;
 
-    protected $table = 'maritalstatus';
+    protected $table = 'marital_status';
     protected $fillable = ['ID', 'Name'];
 
     public function FindMaritalStatus($id) {

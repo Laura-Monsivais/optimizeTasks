@@ -34,12 +34,7 @@ return new class extends Migration
             $table->integer('GroupID')->nullable();
             $table->timestamps();
 
-/*             Schema::create('MaritalStatusID', function (Blueprint $table) {
-                $table->id();
-                $table->unsignedBigInteger('MaritalStatusID');
-                $table->foreign('MaritalStatusID')->references('ID')->on('marital_statuses')->onDelete('cascade');
-                $table->timestamps();
-            }); */
+
 
             Schema::create('NationalityID', function (Blueprint $table) {
                 $table->id();
