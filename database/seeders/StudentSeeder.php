@@ -14,7 +14,6 @@ class StudentSeeder extends Seeder
     public function run(): void
     {
         Students::create([
-            'FamilyID'=> 1001,
             'Name' => 'Laura',
             'Last' => 'Monsivais',
             'Last2' => 'Flores',
