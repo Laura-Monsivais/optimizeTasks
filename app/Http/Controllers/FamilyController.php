@@ -65,7 +65,7 @@ class FamilyController extends Controller
         $state = State::find($StateID);
 
         if ($state) {
-            return response()->json(['StateID' => $state->ID]);
+            return response()->json(['StateID' => $state->Name]);
         } else {
             return response()->json(['mensaje' => 'Registro no encontrado'], 404);
         }
@@ -81,7 +81,7 @@ class FamilyController extends Controller
         $Country = Country::find($CountryID);
 
         if ($Country) {
-            return response()->json(['CountryID' => $Country->ID]);
+            return response()->json(['CountryID' => $Country->Name]);
         } else {
             return response()->json(['mensaje' => 'Registro no encontrado'], 404);
         }
