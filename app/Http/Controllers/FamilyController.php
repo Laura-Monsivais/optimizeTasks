@@ -98,6 +98,7 @@ class FamilyController extends Controller
     /* Separar dirección */
     public function separateAddress(Request $request)
     {
+        /* El numero interior tome letras y que el código este en inglés y tenga los campos de Nemax */
 
         $address = $request->input('address');
         $calle = 'Address1';
@@ -168,6 +169,8 @@ class FamilyController extends Controller
     /* Validar Teléfono */
     public function validateNumber(Request $request)
     {
+
+        /* Falta eliminar espacios u otro caracter (-)*/
         $rules = [
             'number' => 'required|numeric',
         ];
@@ -180,7 +183,7 @@ class FamilyController extends Controller
         $validator = Validator::make($request->all(), $rules, $messages);
 
         if ($validator->fails()) {
-            return redirect()->back()->withErrors($validator)->withInput();
+            return response()->json(['error' => $validator], 404);
         }
 
         $numero = $request->input('number');
@@ -193,12 +196,13 @@ class FamilyController extends Controller
         }
 
         if (strlen($numero) !== 10) {
-            return redirect()->back()->withErrors(['number' => 'Deben de ser 10 numeros'])->withInput();
+            return response()->json(['error' => 'Deben de ser 10 numeros'], 404);
         }
 
         if (strlen($numero) < 10) {
-            return redirect()->back()->withErrors(['number' => 'Número de teléfono inválido.'])->withInput();
+            return response()->json(['error' => 'Número de teléfono inválido.'], 404);
         }
-        return redirect()->back()->with('success', 'Número de teléfono válido: ' . $numero);
+
+        return response()->json(['success' => 'Número de teléfono válido: ' . $numero], 200); 
     }
 }

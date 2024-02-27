@@ -22,9 +22,9 @@ class FamilySeeder extends Seeder
             'Address2' => '',
             'City' => 'Monterrey',
             'County' => 'Mexico',
-            'StateID' => '19',
+            'StateID' => 2422,
             'CodigoPostal' => '64460',
-            'CountryID' => '1',
+            'CountryID' => 142,
             'Phone1' => '1',
             'Phone2' => '1'
         ]);
