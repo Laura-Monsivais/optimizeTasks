@@ -9,7 +9,7 @@ class Nationality extends Model
 {
     use HasFactory;
 
-    protected $table = 'nationality';
+    protected $table = 'nationalities';
     protected $fillable = ['ID', 'Name'];
     public function FindNationality($id) {
         $Nacionality = Nationality::find($id);

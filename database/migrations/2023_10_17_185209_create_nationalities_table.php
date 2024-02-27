@@ -12,7 +12,8 @@ return new class extends Migration
     public function up(): void
     {
         Schema::create('nationalities', function (Blueprint $table) {
-            $table->id();
+            $table->ID();
+            $table->string('Name');
             $table->timestamps();
         });
     }

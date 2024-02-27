@@ -34,7 +34,7 @@ return new class extends Migration
         Schema::create('MaritalStatusID', function (Blueprint $table) {
             $table->id();
             $table->unsignedBigInteger('MaritalStatusID');
-            $table->foreign('MaritalStatusID')->references('ID')->on('marital_statuses')->onDelete('cascade');
+            $table->foreign('MaritalStatusID')->references('ID')->on('marital_status')->onDelete('cascade');
             $table->timestamps();       
          });
     }
