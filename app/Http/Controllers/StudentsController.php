@@ -6,12 +6,9 @@ use App\Models\Program;
 use App\Models\Students;
 use Illuminate\Http\Request;
 use App\Models\MaritalStatus;
-use App\Models\Persons;
-use App\Models\Country;
-use App\Models\Family;
-use App\Models\State;
-use Faker\Core\Number;
-use Illuminate\Support\Facades\Validator;
+use App\Models\Nationality;
+use App\Models\Place;
+use App\Models\Religion;
 
 class StudentsController extends Controller
 {
@@ -21,7 +18,6 @@ class StudentsController extends Controller
         return $Student;
         //return response()->json( $family );//
     }
-
 
     public function store(Request $request, $ID)
     {
@@ -104,27 +100,27 @@ class StudentsController extends Controller
         return $programID;
     }
 
-    public function MaritalStatusID($id)
+    public function getMaritalStatusID($id)
     {
-        $MaritalStatusID = Program::find($id);
+        $MaritalStatusID = MaritalStatus::find($id);
         return $MaritalStatusID;
     }
 
     public function BirthPlaceID($id)
     {
-        $BirthPlaceID = Program::find($id);
+        $BirthPlaceID = Place::find($id);
         return $BirthPlaceID;
     }
 
     public function NationalityID($id)
     {
-        $NationalityID = Program::find($id);
+        $NationalityID = Nationality::find($id);
         return $NationalityID;
     }
 
     public function ReligionID($id)
     {
-        $ReligionID = Program::find($id);
+        $ReligionID = Religion::find($id);
         return $ReligionID;
     }
 }
