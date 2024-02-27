@@ -26,7 +26,7 @@ Route::post('/families/create', [FamilyController::class, 'store']);
 Route::post('/families/separateSurnames', [FamilyController::class, 'separateSurnames']);
 Route::post('/families/separateAddress', [FamilyController::class, 'separateAddress']);
 Route::get('/families/getStateID/{StateID}', [FamilyController::class, 'getStateID']);
-Route::get('/families/get/CountryID{CountryID}', [FamilyController::class, 'getCountryID']);
+Route::get('/families/get/CountryID/{CountryID}', [FamilyController::class, 'getCountryID']);
 Route::post('/families/validateNumber', [FamilyController::class, 'validateNumber'])->name('fValidateNumber');;
 Route::post('/families/verificationFamID', [FamilyController::class, 'verificationFamID']);
 

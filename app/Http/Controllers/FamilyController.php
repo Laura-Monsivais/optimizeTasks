@@ -56,17 +56,20 @@ class FamilyController extends Controller
     }
 
     /* Obtener StateID (ID del estado) */
-    public function getStateID($StateID)
+    public function getStateID($stateID)
     {
-        // Verifica si el ID es válido
-        if (!$StateID) {
-            return response()->json(['mensaje' => 'ID no proporcionado en la solicitud'], 400);
-        }
-        $state = State::find($StateID);
-
-        if ($state) {
+        try {
+            // Verifica si el ID es válido
+            if (!$stateID) {
+                return response()->json(['mensaje' => 'ID no proporcionado en la solicitud'], 400);
+            }
+    
+            // Utiliza findOrFail para buscar el estado por ID
+            $state = State::findOrFail($stateID);
+    
             return response()->json(['StateID' => $state->ID]);
-        } else {
+        } catch (\Illuminate\Database\Eloquent\ModelNotFoundException $e) {
+            // Captura la excepción y devuelve un mensaje de error
             return response()->json(['mensaje' => 'Registro no encontrado'], 404);
         }
     }
@@ -172,25 +175,25 @@ class FamilyController extends Controller
         $validator = Validator::make($request->all(), $rules, $messages);
 
         if ($validator->fails()) {
-            return response()->json(['error' => $validator], 404);
+            return redirect()->back()->withErrors($validator)->withInput();
         }
 
-        $number = $request->input('number');
+        $numero = $request->input('number');
 
-        $number = preg_replace("/[^0-9]/", "", $number);
+        $numero = preg_replace("/[^0-9]/", "", $numero);
 
         $lada = $request->input('lada');
-        if (strlen($number) < 8 && is_numeric($lada)) {
-            $number = $lada . $number;
+        if (strlen($numero) < 8 && is_numeric($lada)) {
+            $numero = $lada . $numero;
         }
 
-        if (strlen($number) !== 10) {
-            return response()->json(['error' => 'Deben de ser 10 numeros'], 404);
+        if (strlen($numero) !== 10) {
+            return redirect()->back()->withErrors(['number' => 'Deben de ser 10 numeros'])->withInput();
         }
 
-        if (strlen($number) < 10) {
-            return response()->json(['error' => 'Número de teléfono inválido.'], 404);
+        if (strlen($numero) < 10) {
+            return redirect()->back()->withErrors(['number' => 'Número de teléfono inválido.'])->withInput();
         }
-        return response()->json(['success' => 'Número de teléfono válido: ' . $number], 200);
+        return redirect()->back()->with('success', 'Número de teléfono válido: ' . $numero);
     }
 }
