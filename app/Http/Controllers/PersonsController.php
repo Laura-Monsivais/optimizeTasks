@@ -68,17 +68,17 @@ class PersonsController extends Controller
         }
 
         // Calcular el dígito verificador
-        $suma = 0;
-        $caracteres = "0123456789ABCDEFGHIJKLMNÑOPQRSTUVWXYZ";
-        $diccionario = array_flip(str_split($caracteres));
+        $sum = 0;
+        $characters = "0123456789ABCDEFGHIJKLMNÑOPQRSTUVWXYZ";
+        $diccionary = array_flip(str_split($characters));
 
         for ($i = 0; $i < 18; $i++) {
-            $valor = $diccionario[$curp[$i]];
-            $suma += ($i < 17) ? $valor * (18 - $i) : 10 - $suma % 10;
+            $value = $diccionary[$curp[$i]];
+            $sum += ($i < 17) ? $value * (18 - $i) : 10 - $sum % 10;
         }
 
         // Verificar el dígito verificador
-        $valid = (int)$curp[17] === $suma % 10;
+        $valid = (int)$curp[17] === $sum % 10;
 
         return response()->json(['valido' => $valid]);
     }
@@ -91,12 +91,12 @@ class PersonsController extends Controller
             return "CURP no válida";
         }
 
-        $sexo = strtoupper($curp[10]);
+        $gender = strtoupper($curp[10]);
 
         // Determinar el sexo
-        if ($sexo == 'H') {
+        if ($gender == 'H') {
             return "M";
-        } elseif ($sexo == 'M') {
+        } elseif ($gender == 'M') {
             return "F";
         }
     }

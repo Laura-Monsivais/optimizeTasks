@@ -60,20 +60,20 @@ class StudentsController extends Controller
             return response()->json(['error' => 'Formato de CURP incorrecto'], 400);
         }
 
-        $suma = 0;
-        $caracteres = "0123456789ABCDEFGHIJKLMNÑOPQRSTUVWXYZ";
-        $diccionario = array_flip(str_split($caracteres));
+        $sum = 0;
+        $characters = "0123456789ABCDEFGHIJKLMNÑOPQRSTUVWXYZ";
+        $diccionary = array_flip(str_split($characters));
 
         for ($i = 0; $i < 18; $i++) {
-            $valor = $diccionario[$curp[$i]];
+            $value = $diccionary[$curp[$i]];
             if ($i < 17) {
-                $suma += $valor * (18 - $i);
+                $sum += $value * (18 - $i);
             } else {
-                $digitoVerificador = 10 - $suma % 10;
+                $valid = 10 - $sum % 10;
             }
         }
 
-        return response()->json(['valid' => (int)$curp[17] === $digitoVerificador]);
+        return response()->json(['valid' => (int)$curp[17] === $valid]);
     }
 
     public function validateGender(Request $request)
@@ -84,12 +84,12 @@ class StudentsController extends Controller
             return "CURP no válida";
         }
 
-        $sexo = strtoupper($curp[10]);
+        $gender = strtoupper($curp[10]);
 
         // Determinar el sexo
-        if ($sexo == 'H') {
+        if ($gender == 'H') {
             return "M";
-        } elseif ($sexo == 'M') {
+        } elseif ($gender == 'M') {
             return "F";
         }
     }
