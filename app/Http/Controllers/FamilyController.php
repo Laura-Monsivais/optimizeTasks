@@ -6,6 +6,7 @@ use App\Models\Country;
 use App\Models\Family;
 use App\Models\State;
 use App\Models\Students;
+use App\Models\TemporaryTable;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
 
@@ -26,13 +27,13 @@ class FamilyController extends Controller
         if (!$student) {
             return "El alumno no existe.";
         }
-    
+
         if (!$student->FamilyID) {
             // Crear una nueva familia utilizando los apellidos del alumno
             $family = new Family();
             $family->LastName1 = $student->Last;
             $family->LastName2 = $student->Last2;
-    
+
             try {
                 $family->save();
                 $student->FamilyID = $family->ID;
@@ -45,7 +46,7 @@ class FamilyController extends Controller
             return response()->json(['error' => 'El alumno ya tiene asignado un ID de familia.'], 422);
         }
     }
-    
+
 
     public function verificationFamID(Request $request)
     {
@@ -142,25 +143,27 @@ class FamilyController extends Controller
     /* Separar apellidos  (LAURA)*/
     public function separateSurnames(Request $request)
     {
-        $fullName = $request->input('fullName');
-        $words = explode(' ', $fullName);
-        if (count($words) > 1) {
-            $maternalSurname = array_pop($words);
-            $possibleUnions = ['DEL', 'DE LA', 'DE', 'A'];
-            $unionPhrase = '';
-            while (in_array(strtoupper($unionPhrase . $maternalSurname), $possibleUnions) && count($words) > 0) {
-                $unionPhrase .= array_pop($words) . ' ';
-                $maternalSurname = $unionPhrase . $maternalSurname;
+        $columnData = $request->input('columnData');
+    
+        foreach ($columnData as $index => $fullName) {
+            $words = explode(' ', $fullName);
+            $paternalSurname = array_shift($words);
+            $maternalSurname = implode(' ', $words);
+
+            $data = TemporaryTable::find($index + 1); 
+    
+            if ($data) {
+                $jsonData = json_decode($data->data, true);
+                $jsonData['paternalSurname'] = $paternalSurname;
+                $jsonData['maternalSurname'] = $maternalSurname;
+                $data->data = json_encode($jsonData);
+                $data->save();
             }
-            $paternalSurname = implode(' ', $words);
-        } else {
-            $paternalSurname = $fullName;
-            $maternalSurname = null;
         }
-        /* Modificarlo a campos de SKEL y revisar validaciones que falten */
+    
         return response()->json([
-            'paternalSurname' => $paternalSurname,
-            'maternalSurname' => $maternalSurname
+            'success' => true,
+            'message' => 'Apellidos separados actualizados correctamente en la tabla temporal.'
         ]);
     }
 
