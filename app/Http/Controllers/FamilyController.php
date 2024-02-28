@@ -6,7 +6,6 @@ use App\Models\Country;
 use App\Models\Family;
 use App\Models\State;
 use App\Models\Students;
-use Faker\Core\Number;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
 
@@ -98,47 +97,46 @@ class FamilyController extends Controller
     /* Separar dirección */
     public function separateAddress(Request $request)
     {
-        /* El numero interior tome letras y que el código este en inglés y tenga los campos de Nemax */
+    $address = $request->input('address');
+    $street = 'Address1';
+    $interiorNumber = 'IntNum';
+    $exteriorNumber = 'ExtNum';
+    $suburb = 'Address2';
 
-        $address = $request->input('address');
-        $calle = 'Address1';
-        $numeroInterior = 'IntNum';
-        $numeroExterior = 'ExtNum';
-        $colonia = 'Address2';
+    // Separar la dirección por espacios
+    $addressParts = explode(' ', $address);
 
-        // Separar la dirección por espacios
-        $addressParts = explode(' ', $address);
-
-        foreach ($addressParts as $key => $part) {
-            // Verificar si la parte actual es numérica
-            if (is_numeric($part)) {
-                // Si hay otra parte numérica siguiente, considerarla como número interior
-                if (isset($addressParts[$key + 1]) && is_numeric($addressParts[$key + 1])) {
-                    $numeroInterior = $part;
-                    $numeroExterior = $addressParts[$key + 1];
-                } else {
-                    // Si solo hay una parte numérica, considerarla como número exterior
-                    $numeroExterior = $part;
-                    // Verificar si hay una indicación de número interior
-                    if (isset($addressParts[$key + 1]) && preg_match('/^Int$/i', $addressParts[$key + 1])) {
-                        $numeroInterior = $addressParts[$key + 2];
-                        $key += 2; // Saltar la parte de 'Int' y el número interior
-                    }
+    foreach ($addressParts as $key => $part) {
+        // Verificar si la parte actual es numérica
+        if (is_numeric($part) || (preg_match('/^\d+[a-zA-Z]*$/', $part))) {
+            // Si hay otra parte numérica o alfanumérica siguiente, considerarla como número interior
+            if (isset($addressParts[$key + 1]) && (is_numeric($addressParts[$key + 1]) || preg_match('/^\d+[a-zA-Z]*$/', $addressParts[$key + 1]))) {
+                $interiorNumber = $part;
+                $exteriorNumber = $addressParts[$key + 1];
+            } else {
+                // Si solo hay una parte numérica o alfanumérica, considerarla como número exterior
+                $exteriorNumber = $part;
+                // Verificar si hay una indicación de número interior
+                if (isset($addressParts[$key + 1]) && preg_match('/^Int$/i', $addressParts[$key + 1])) {
+                    $interiorNumber = $addressParts[$key + 2];
+                    $key += 2; // Saltar la parte de 'Int' y el número interior
                 }
-                // Las partes anteriores a la parte numérica son la calle
-                $calle = implode(' ', array_slice($addressParts, 0, $key));
-                // Las partes posteriores a la parte numérica son la colonia
-                $colonia = implode(' ', array_slice($addressParts, $key + 2));
-                break;
             }
+            // Las partes anteriores a la parte numérica o alfanumérica son la calle
+            $street = implode(' ', array_slice($addressParts, 0, $key));
+            // Las partes posteriores a la parte numérica o alfanumérica son la colonia
+            $suburb = implode(' ', array_slice($addressParts, $key + 2));
+            break;
         }
-        /* Imprimir en inglés con los campos del SKEL */
-        return response()->json([
-            'calle' => $calle,
-            'numero_interior' => $numeroInterior,
-            'numero_exterior' => $numeroExterior,
-            'colonia' => $colonia,
-        ]);
+    }
+
+    // Imprimir en inglés con los campos del SKEL
+    return response()->json([
+        'calle' => $street,
+        'numero_interior' => $interiorNumber,
+        'numero_exterior' => $exteriorNumber,
+        'colonia' => $suburb,
+    ]);
     }
 
     /* Separar apellidos  (LAURA)*/
@@ -185,24 +183,23 @@ class FamilyController extends Controller
         if ($validator->fails()) {
             return response()->json(['error' => $validator], 404);
         }
-
-        $numero = $request->input('number');
-
-        $numero = preg_replace("/[^0-9]/", "", $numero);
+        $number = $request->input('number');
+        $number = preg_replace("/[^0-9]/", "", $number);
+        $number = str_replace(' ', '', $number);
 
         $lada = $request->input('lada');
-        if (strlen($numero) < 8 && is_numeric($lada)) {
-            $numero = $lada . $numero;
+        if (strlen($number) < 8 && is_numeric($lada)) {
+            $number = $lada . $number;
         }
 
-        if (strlen($numero) !== 10) {
+        if (strlen($number) !== 10) {
             return response()->json(['error' => 'Deben de ser 10 numeros'], 404);
         }
 
-        if (strlen($numero) < 10) {
+        if (strlen($number) < 10) {
             return response()->json(['error' => 'Número de teléfono inválido.'], 404);
         }
 
-        return response()->json(['success' => 'Número de teléfono válido: ' . $numero], 200); 
+        return response()->json(['success' => 'Número de teléfono válido: ' . $number], 200); 
     }
 }
