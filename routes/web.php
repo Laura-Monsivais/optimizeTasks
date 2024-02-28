@@ -16,9 +16,10 @@ use Illuminate\Support\Facades\Route;
 | be assigned to the "web" middleware group. Make something great!
 |
 */
+
 Route::get('/', [MainController::class, 'showImport'])->name('showImport');
 Route::post('/import', [MainController::class, 'uploadImport'])->name('uploadImport');
-
+Route::get('/import/table', [MainController::class, 'showTableImport'])->name('showTableImport');
 
 /* Familias */
 Route::get('/families', [FamilyController::class, 'index']);
@@ -46,6 +47,3 @@ Route::get('/persons', [PersonsController::class, 'index']);
 Route::post('/persons/create', [PersonsController::class, 'store']);
 Route::post('/persons/validateGender', [PersonsController::class, 'validateGender']);
 Route::post('/persons/validateCurp', [PersonsController::class, 'validateCurp']);
-
-
-

@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Imports\ImportClass;
+use App\Models\TemporaryTable;
 use Illuminate\Http\Request;
 use Maatwebsite\Excel\Facades\Excel;
 
@@ -15,7 +16,17 @@ class MainController extends Controller
 
     public function uploadImport(Request $request)
     {
-        Excel::import(new ImportClass, $request->file('excel_file')->store('import_files'));
-        return back();
+        $import = new ImportClass;
+        Excel::import($import, $request->file('excel_file')->store('import_files'));
+        $data = TemporaryTable::all();
+        session()->put('imported_data', $data);
+        return redirect()->route('showTableImport');
     }
+    
+    public function showTableImport()
+    {
+        $data = session()->get('imported_data');
+        return view('import-table', compact('data'));
+    }
+    
 }
