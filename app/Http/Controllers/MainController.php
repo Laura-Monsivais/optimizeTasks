@@ -22,11 +22,23 @@ class MainController extends Controller
         session()->put('imported_data', $data);
         return redirect()->route('showTableImport');
     }
-    
+
     public function showTableImport()
     {
         $data = session()->get('imported_data');
         return view('import-table', compact('data'));
+    }
+
+    public function checkUpdates()
+    {
+        $currentCount = TemporaryTable::count();
+    
+        $previousCount = session('imported_data_count', 0);
+        $changes = $currentCount !== $previousCount;
+    
+        session(['imported_data_count' => $currentCount]);
+    
+        return response()->json(['changes' => $changes]);
     }
     
 }

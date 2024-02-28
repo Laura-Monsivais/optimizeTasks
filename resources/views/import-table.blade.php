@@ -109,10 +109,10 @@
                 var columnIndex = $('th input:checked').closest('th').index();
                 var url = $(this).hasClass('separate-last-name') ? '/families/separateSurnames' :
                     $(this).hasClass('separate-address') ? '/families/separateAddress' :
-                    $(this).hasClass('separate-full-name') ? '/families/separateFullName' :
+                    $(this).hasClass('separate-full-name') ? '/students/separateFullName' :
                     $(this).hasClass('validate-curp') ? '/families/validateCurp' :
-                    $(this).hasClass('create-person') ? '/families/createPerson' :
-                    $(this).hasClass('validate-gender') ? '/families/validateGender' : '';
+                    $(this).hasClass('create-person') ? '/students/create' :
+                    $(this).hasClass('validate-gender') ? '/persons/validateGender' : '';
 
                 sendData(url, columnIndex);
             });
@@ -146,6 +146,27 @@
                     alert('No hay datos en la columna seleccionada.');
                 }
             }
+        });
+
+        function checkForUpdates() {
+        $.ajax({
+            url: '/check-updates',
+            type: 'GET',
+            success: function(response) {
+                if (response.changes) {
+                    location.reload();
+                }
+            },
+            error: function(xhr, status, error) {
+                console.error(error);
+            }
+        });
+    }
+
+  $(document).ready(function() {
+            checkForUpdates();
+            setInterval(checkForUpdates, 
+            30000);
         });
     </script>
 </body>

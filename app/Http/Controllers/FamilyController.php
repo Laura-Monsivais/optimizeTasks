@@ -47,7 +47,6 @@ class FamilyController extends Controller
         }
     }
 
-
     public function verificationFamID(Request $request)
     {
         $IDStudents = $request->input('students');
@@ -145,29 +144,27 @@ class FamilyController extends Controller
     public function separateSurnames(Request $request)
     {
         $columnData = $request->input('columnData');
+        $paternalSurnames = [];
+        $maternalSurnames = [];
     
-        foreach ($columnData as $index => $fullName) {
+        foreach ($columnData as $fullName) {
             $words = explode(' ', $fullName);
             $paternalSurname = array_shift($words);
             $maternalSurname = implode(' ', $words);
-
-            $data = TemporaryTable::find($index + 1); 
     
-            if ($data) {
-                $jsonData = json_decode($data->data, true);
-                $jsonData['paternalSurname'] = $paternalSurname;
-                $jsonData['maternalSurname'] = $maternalSurname;
-                $data->data = json_encode($jsonData);
-                $data->save();
-            }
+            // Agregar los apellidos paternos y maternos a sus respectivos arrays
+            $paternalSurnames[] = $paternalSurname;
+            $maternalSurnames[] = $maternalSurname;
         }
     
         return response()->json([
             'success' => true,
-            'message' => 'Apellidos separados actualizados correctamente en la tabla temporal.'
+            'message' => 'Apellidos separados actualizados correctamente.',
+            'paternalSurnames' => $paternalSurnames,
+            'maternalSurnames' => $maternalSurnames
         ]);
     }
-
+    
     /* Validar Teléfono */
     public function validateNumber(Request $request)
     {

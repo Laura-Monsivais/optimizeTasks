@@ -20,6 +20,8 @@ use Illuminate\Support\Facades\Route;
 Route::get('/', [MainController::class, 'showImport'])->name('showImport');
 Route::post('/import', [MainController::class, 'uploadImport'])->name('uploadImport');
 Route::get('/import/table', [MainController::class, 'showTableImport'])->name('showTableImport');
+Route::get('/check-updates', [MainController::class, 'checkUpdates']);
+
 
 /* Familias */
 Route::get('/families', [FamilyController::class, 'index']);
