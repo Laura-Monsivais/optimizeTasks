@@ -24,15 +24,10 @@ return new class extends Migration
             $table->string('CURP');
             $table->integer('CellPhone');
             $table->integer('PrimaryEmail');
-            $table->integer('MaritalStatusID');
             $table->string('WorkPlace');
             $table->string('WorkJob');
-            $table->timestamps();
-
-        });
-
-        Schema::create('MaritalStatusID', function (Blueprint $table) {
-            $table->id();
+      
+     
             $table->unsignedBigInteger('MaritalStatusID');
             $table->foreign('MaritalStatusID')->references('ID')->on('marital_status')->onDelete('cascade');
             $table->timestamps();       
@@ -44,6 +39,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        //
+        Schema::dropIfExists('persons');
     }
 };

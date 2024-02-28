@@ -23,27 +23,23 @@ return new class extends Migration
             $table->string('Address2')->nullable();
             $table->string('City')->nullable();
             $table->string('County')->nullable();
-            $table->integer('StateID')->nullable();
             $table->integer('CodigoPostal')->nullable();
-            $table->integer('CountryID')->nullable();
             $table->integer('Phone1')->nullable();
             $table->integer('Phone2')->nullable();
+
+            $table->unsignedBigInteger('StateID');
+            $table->foreign('StateID')->references('ID')->on('states')->onDelete('cascade');
+
+            $table->unsignedBigInteger('CountryID');
+            $table->foreign('CountryID')->references('ID')->on('countries')->onDelete('cascade');
+     
             $table->timestamps();
 
-            Schema::create('StateID', function (Blueprint $table) {
-                $table->id();
-                $table->unsignedBigInteger('StateID');
-                $table->foreign('StateID')->references('ID')->on('states')->onDelete('cascade');
-                $table->timestamps();
-            });
-
-            Schema::create('CountryID', function (Blueprint $table) {
-                $table->id();
-                $table->unsignedBigInteger('CountryID');
-                $table->foreign('CountryID')->references('ID')->on('countries')->onDelete('cascade');
-                $table->timestamps();
-            });
-        });
+          
+      
+        }); 
+         
+        
     }
 
     /**
@@ -52,6 +48,6 @@ return new class extends Migration
     public function down(): void
     {
         //
-        Schema::dropIfExists('table');
+        Schema::dropIfExists('families');
     }
 };
