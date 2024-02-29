@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\AcademicController;
 use App\Http\Controllers\FamilyController;
 use App\Http\Controllers\MainController;
 use App\Http\Controllers\PersonsController;
@@ -49,3 +50,9 @@ Route::get('/persons', [PersonsController::class, 'index']);
 Route::post('/persons/create', [PersonsController::class, 'store']);
 Route::post('/persons/validateGender', [PersonsController::class, 'validateGender']);
 Route::post('/persons/validateCurp', [PersonsController::class, 'validateCurp']);
+
+/* Academic */
+Route::post('/academic/createTerm', [AcademicController::class, 'createTerm']);
+Route::post('/academic/updateTerm', [AcademicController::class, 'updateTerm']);
+Route::get('/academic/destroyTerm', [AcademicController::class, 'destroyTerm']);
+Route::get('/academic/getTerm', [AcademicController::class, 'getTerm']);
