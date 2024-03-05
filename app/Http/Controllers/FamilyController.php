@@ -154,6 +154,9 @@ class FamilyController extends Controller
             // Agregar los apellidos paternos y maternos a sus respectivos arrays
             $paternalSurnames[] = $paternalSurname;
             $maternalSurnames[] = $maternalSurname;
+
+
+            
         }
     
         return response()->json([

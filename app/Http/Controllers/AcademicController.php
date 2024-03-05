@@ -11,13 +11,19 @@ class AcademicController extends Controller
 {
 
     /* Crear la migracion, modelo, rutas y funciones*/
-    public function createTerm(Request $request)
+    public function createTerm(Request $request,$id)
     {
+        $cicloEscolar = Term::find($id);
+
+        if (!$cicloEscolar) {
+            return response()->json(['mensaje' => 'Ciclo escolar no encontrado'], 404);
+        }
+        
         // Crea un nuevo ciclo escolar
         $cicloEscolar = Term::create([
-            'nombre' => $request->input('nombre'),
-            'inicio' => $request->input('inicio'),
-            'fin' => $request->input('fin'),
+            'Name' => $request->input('Name'),
+            'StartDate' => $request->input('NameStart'),
+            'EndDate' => $request->input('NameEnd'),
         ]);
 
         return response()->json(['mensaje' => 'Ciclo creado correctamente', 'ciclo_escolar' => $cicloEscolar], 201);
@@ -31,11 +37,12 @@ class AcademicController extends Controller
             return response()->json(['mensaje' => 'Ciclo escolar no encontrado'], 404);
         }
         $cicloEscolar->update([
-            'nombre' => $request->input('nombre'),
-            'inicio' => $request->input('inicio'),
-            'fin' => $request->input('fin'),
+            'Name' => $request->input('Name'),
+            'StartDate' => $request->input('NameStart'),
+            'EndDate' => $request->input('EndDate'),
         ]);
-        return response()->json(['mensaje'=>'El ciclo se actualizadocorrectamente','ciclo_escolar'=>$cicloEscolar],200);
+        
+    return response()->json(['mensaje'=>'El ciclo se actualizado correctamente','ciclo_escolar'=>$cicloEscolar],200);
     
     }
 

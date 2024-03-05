@@ -13,6 +13,14 @@ return new class extends Migration
     {
         Schema::create('terms', function (Blueprint $table) {
             $table->id();
+            $table->string('Name');
+            $table->date('StartDate');
+            $table->date('EndDate');
+            $table->integer('Status')->nullable();
+            $table->integer('StudentsStatus')->nullable();
+            $table->integer('K12_SEPBimGPsEq')->nullable();
+            
+            $table->rememberToken();
             $table->timestamps();
         });
     }
