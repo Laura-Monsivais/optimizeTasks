@@ -97,73 +97,160 @@ class FamilyController extends Controller
     /* Separar dirección */
     public function separateAddress(Request $request)
     {
-    $address = $request->input('address');
-    $street = 'Address1';
-    $interiorNumber = 'IntNum';
-    $exteriorNumber = 'ExtNum';
-    $suburb = 'Address2';
+        $address = $request->input('address');
+        $street = 'Address1';
+        $interiorNumber = 'IntNum';
+        $exteriorNumber = 'ExtNum';
+        $suburb = 'Address2';
 
-    // Separar la dirección por espacios
-    $addressParts = explode(' ', $address);
+        // Separar la dirección por espacios
+        $addressParts = explode(' ', $address);
 
-    foreach ($addressParts as $key => $part) {
-        // Verificar si la parte actual es numérica
-        if (is_numeric($part) || (preg_match('/^\d+[a-zA-Z]*$/', $part))) {
-            // Si hay otra parte numérica o alfanumérica siguiente, considerarla como número interior
-            if (isset($addressParts[$key + 1]) && (is_numeric($addressParts[$key + 1]) || preg_match('/^\d+[a-zA-Z]*$/', $addressParts[$key + 1]))) {
-                $interiorNumber = $part;
-                $exteriorNumber = $addressParts[$key + 1];
-            } else {
-                // Si solo hay una parte numérica o alfanumérica, considerarla como número exterior
-                $exteriorNumber = $part;
-                // Verificar si hay una indicación de número interior
-                if (isset($addressParts[$key + 1]) && preg_match('/^Int$/i', $addressParts[$key + 1])) {
-                    $interiorNumber = $addressParts[$key + 2];
-                    $key += 2; // Saltar la parte de 'Int' y el número interior
+        foreach ($addressParts as $key => $part) {
+            // Verificar si la parte actual es numérica
+            if (is_numeric($part) || (preg_match('/^\d+[a-zA-Z]*$/', $part))) {
+                // Si hay otra parte numérica o alfanumérica siguiente, considerarla como número interior
+                if (isset($addressParts[$key + 1]) && (is_numeric($addressParts[$key + 1]) || preg_match('/^\d+[a-zA-Z]*$/', $addressParts[$key + 1]))) {
+                    $interiorNumber = $part;
+                    $exteriorNumber = $addressParts[$key + 1];
+                } else {
+                    // Si solo hay una parte numérica o alfanumérica, considerarla como número exterior
+                    $exteriorNumber = $part;
+                    // Verificar si hay una indicación de número interior
+                    if (isset($addressParts[$key + 1]) && preg_match('/^Int$/i', $addressParts[$key + 1])) {
+                        $interiorNumber = $addressParts[$key + 2];
+                        $key += 2; // Saltar la parte de 'Int' y el número interior
+                    }
                 }
+                // Las partes anteriores a la parte numérica o alfanumérica son la calle
+                $street = implode(' ', array_slice($addressParts, 0, $key));
+                // Las partes posteriores a la parte numérica o alfanumérica son la colonia
+                $suburb = implode(' ', array_slice($addressParts, $key + 2));
+                break;
             }
-            // Las partes anteriores a la parte numérica o alfanumérica son la calle
-            $street = implode(' ', array_slice($addressParts, 0, $key));
-            // Las partes posteriores a la parte numérica o alfanumérica son la colonia
-            $suburb = implode(' ', array_slice($addressParts, $key + 2));
-            break;
         }
+
+        // Imprimir en inglés con los campos del SKEL
+        return response()->json([
+            'calle' => $street,
+            'numero_interior' => $interiorNumber,
+            'numero_exterior' => $exteriorNumber,
+            'colonia' => $suburb,
+        ]);
     }
 
-    // Imprimir en inglés con los campos del SKEL
-    return response()->json([
-        'calle' => $street,
-        'numero_interior' => $interiorNumber,
-        'numero_exterior' => $exteriorNumber,
-        'colonia' => $suburb,
-    ]);
-    }
-
-    /* Separar apellidos  (LAURA)*/
     public function separateSurnames(Request $request)
     {
         $columnData = $request->input('columnData');
-        $paternalSurnames = [];
-        $maternalSurnames = [];
-    
+        $namesWithSurnames = [];
+
         foreach ($columnData as $fullName) {
-            $words = explode(' ', $fullName);
-            $paternalSurname = array_shift($words);
-            $maternalSurname = implode(' ', $words);
-    
-            // Agregar los apellidos paternos y maternos a sus respectivos arrays
-            $paternalSurnames[] = $paternalSurname;
-            $maternalSurnames[] = $maternalSurname;
+            if (!empty($fullName)) {
+                $separatedNames = $this->separate($fullName);
+                $namesWithSurnames[] = $separatedNames;
+            }
         }
-    
+        $records = TemporaryTable::all();
+
+        foreach ($records as $key => $record) {
+            if (isset($namesWithSurnames[$key])) {
+                $recordData = json_decode($record->data, true);
+
+                $recordData['LastName1 (Familias)'] = $namesWithSurnames[$key]['LastName1 (Familias)'];
+                $recordData['LastName2 (Familias)'] = $namesWithSurnames[$key]['LastName2 (Familias)'];
+                $record->update(['data' => json_encode($recordData)]);
+            }
+        }
         return response()->json([
             'success' => true,
-            'message' => 'Apellidos separados actualizados correctamente.',
-            'paternalSurnames' => $paternalSurnames,
-            'maternalSurnames' => $maternalSurnames
+            'message' => 'Nombres y apellidos separados actualizados correctamente.',
+            'namesWithSurnames' => $namesWithSurnames
         ]);
     }
-    
+
+    public static function separate($fullName, $firstName = false)
+    {
+        $chunks = ($firstName)
+            ? explode(" ", strtoupper($fullName))
+            : array_reverse(explode(" ", strtoupper($fullName)));
+        $exceptions = ["DE", "LA", "DEL", "LOS", "SAN", "SANTA"];
+        $exist = array_intersect($chunks, $exceptions);
+        $name = array("LastName2 (Familias)" => "", "LastName1 (Familias)" => "");
+        $add = ($firstName)
+            ? "paterno"
+            : "materno";
+        $first_time = true;
+        if ($firstName) {
+            if (!empty($exist)) {
+                foreach ($chunks as $chunk) {
+                    if ($first_time) {
+                        $name["LastName1 (Familias)"] = $name["LastName1 (Familias)"] . " " . $chunk;
+                        $first_time = false;
+                    } else {
+                        if (in_array($chunk, $exceptions)) {
+                            if ($add == "paterno") {
+                                $name["LastName1 (Familias)"] = $name["LastName1 (Familias)"] . " " . $chunk;
+                            } else {
+                                $name["LastName2 (Familias)"] = $name["LastName2 (Familias)"] . " " . $chunk;
+                            }
+                        } else {
+                            if ($add == "paterno") {
+                                $name["LastName1 (Familias)"] = $name["LastName1 (Familias)"] . " " . $chunk;
+                                $add = "materno";
+                            } else {
+                                $name["LastName2 (Familias)"] = $name["LastName2 (Familias)"] . " " . $chunk;
+                                $add = "nombres";
+                            }
+                        }
+                    }
+                }
+            } else {
+                foreach ($chunks as $chunk) {
+                    if ($first_time) {
+                        $name["LastName1 (Familias)"] = $name["LastName1 (Familias)"] . " " . $chunk;
+                        $first_time = false;
+                    } else {
+                        if (in_array($chunk, $exceptions)) {
+                            if ($add == "paterno") {
+                                $name["LastName1 (Familias)"] = $name["LastName1 (Familias)"] . " " . $chunk;
+                            } else {
+                                $name["LastName2 (Familias)"] = $name["LastName2 (Familias)"] . " " . $chunk;
+                            }
+                        } else {
+                            if ($add == "paterno") {
+                                $name["LastName2 (Familias)"] = $name["LastName2 (Familias)"] . " " . $chunk;
+                                $add = "materno";
+                            }
+                        }
+                    }
+                }
+            }
+        } else {
+            foreach ($chunks as $chunk) {
+                if ($first_time) {
+                    $name["LastName2 (Familias)"] = $chunk . " " . $name["LastName2 (Familias)"];
+                    $first_time = false;
+                } else {
+                    if (in_array($chunk, $exceptions)) {
+                        if ($add == "materno") {
+                            $name["LastName2 (Familias)"] = $chunk . " " . $name["LastName2 (Familias)"];
+                        } elseif ($add == "paterno") {
+                            $name["LastName1 (Familias)"] = $chunk . " " . $name["LastName1 (Familias)"];
+                        }
+                    } else {
+                        if ($add == "materno") {
+                            $add = "paterno";
+                            $name["LastName1 (Familias)"] = $chunk . " " . $name["LastName1 (Familias)"];
+                        }
+                    }
+                }
+            }
+        }
+        $name["LastName2 (Familias)"] = trim($name["LastName2 (Familias)"]);
+        $name["LastName1 (Familias)"] = trim($name["LastName1 (Familias)"]);
+        return $name;
+    }
+
     /* Validar Teléfono */
     public function validateNumber(Request $request)
     {
@@ -200,6 +287,6 @@ class FamilyController extends Controller
             return response()->json(['error' => 'Número de teléfono inválido.'], 404);
         }
 
-        return response()->json(['success' => 'Número de teléfono válido: ' . $number], 200); 
+        return response()->json(['success' => 'Número de teléfono válido: ' . $number], 200);
     }
 }
