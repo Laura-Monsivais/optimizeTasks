@@ -37,6 +37,7 @@ Route::post('/families/verificationFamID', [FamilyController::class, 'verificati
 /* Alumnos */
 Route::get('/students', [StudentsController::class, 'index']);
 Route::post('/students/create', [StudentsController::class, 'store']);
+Route::post('/students/separateFullName', [StudentsController::class, 'separateFullName']);
 Route::post('/students/validateGender', [StudentsController::class, 'validateGender']);
 Route::post('/students/validateCurp', [StudentsController::class, 'validateCurp']);
 Route::get('/students/getMaritalStatusID/{MaritalStatusID}', [StudentsController::class, 'getMaritalStatusID']);
