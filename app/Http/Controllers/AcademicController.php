@@ -93,7 +93,12 @@ class AcademicController extends Controller
             return response()->json(['mensaje' => 'Grupo no encontrado'], 404);
         }
         $group->update([
-            'Name' => $request->input('Name')
+            'Name' => $request->input('Name'),
+            'ProgramShiftID' => 1,
+            'TermID' => $request->input('TermID'),
+            'ProgramID' => $request->input('ProgramID'),
+            'ClassLevelID' => $request->input('ClassLevelID'),
+            'Owner_CID' => 0,
         ]);
         
     return response()->json(['mensaje'=>'El grupo ha sido actualizado correctamente','group'=>$group],200);
