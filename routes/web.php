@@ -56,3 +56,8 @@ Route::post('/academic/createTerm', [AcademicController::class, 'createTerm']);
 Route::post('/academic/updateTerm/{id}', [AcademicController::class, 'updateTerm']);
 Route::get('/academic/destroyTerm/{id}', [AcademicController::class, 'destroyTerm']);
 Route::get('/academic/getTerm/{id}', [AcademicController::class, 'getTerm']);
+
+Route::post('/academic/createGroup', [AcademicController::class, 'createGroup']);
+Route::post('/academic/updateGroup/{id}', [AcademicController::class, 'updateGroup']);
+Route::get('/academic/destroyGroup/{id}', [AcademicController::class, 'destroyGroup']);
+Route::get('/academic/getGroup/{id}', [AcademicController::class, 'getGroup']);

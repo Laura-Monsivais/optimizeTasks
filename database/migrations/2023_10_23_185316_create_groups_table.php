@@ -13,6 +13,12 @@ return new class extends Migration
     {
         Schema::create('groups', function (Blueprint $table) {
             $table->id();
+            $table->string('Name');
+            $table->integer('ProgramShiftID');
+            $table->foreign('TermID')->references('id')->on('terms');
+            $table->integer('ProgramID')->nullable();
+            $table->integer('ClassLevelID')->nullable();
+            $table->string('Owner_CID');
             $table->timestamps();
         });
     }
