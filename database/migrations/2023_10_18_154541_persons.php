@@ -30,7 +30,7 @@ return new class extends Migration
      
             $table->unsignedBigInteger('MaritalStatusID');
             $table->foreign('MaritalStatusID')->references('ID')->on('marital_status')->onDelete('cascade');
-            $table->timestamps();       
+            $table->timestamps();
          });
     }
 

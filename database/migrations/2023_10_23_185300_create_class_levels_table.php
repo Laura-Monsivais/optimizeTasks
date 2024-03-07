@@ -13,6 +13,17 @@ return new class extends Migration
     {
         Schema::create('class_levels', function (Blueprint $table) {
             $table->id();
+            $table->string('Name');
+            $table->string('Short');
+            $table->integer('CurrentCap');
+            $table->integer('FutureCap');
+            $table->integer('GroupCap');
+            $table->integerid('NivelEducativoID');
+            $table->string('SEPName');
+            $table->integer('Accounting');
+            $table->integer('Visible');
+            $table->integer('Delta');
+            
             $table->timestamps();
         });
     }
