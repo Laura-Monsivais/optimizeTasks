@@ -235,7 +235,5 @@ public function statesFullName(Request $request)
     if ($matchingState) {
         return response()->json(['Full Name' => $matchingState->Name]);
     }
-
-    return response()->json(['Full Name' => null]);
 }
 }
