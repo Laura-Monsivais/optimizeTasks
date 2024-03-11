@@ -18,7 +18,7 @@ return new class extends Migration
             $table->integer('CurrentCap');
             $table->integer('FutureCap');
             $table->integer('GroupCap');
-            $table->integerid('NivelEducativoID');
+            $table->integer('NivelEducativoID');
             $table->string('SEPName');
             $table->integer('Accounting');
             $table->integer('Visible');

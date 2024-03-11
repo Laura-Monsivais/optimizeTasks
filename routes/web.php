@@ -33,7 +33,7 @@ Route::get('/families/getStateID/{StateID}', [FamilyController::class, 'getState
 Route::get('/families/getCountryID/{CountryID}', [FamilyController::class, 'getCountryID']);
 Route::post('/families/validateNumber', [FamilyController::class, 'validateNumber'])->name('fValidateNumber');;
 Route::post('/families/verificationFamID', [FamilyController::class, 'verificationFamID']);
-
+Route::get('/families/statesFullName', [FamilyController::class, 'statesFullName']);
 
 /* Alumnos */
 Route::get('/students', [StudentsController::class, 'index']);

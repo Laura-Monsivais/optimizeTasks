@@ -289,4 +289,82 @@ class FamilyController extends Controller
 
         return response()->json(['success' => 'Número de teléfono válido: ' . $number], 200);
     }
+
+    function StateFullName($Name)
+{
+    $fullname = State::table('states')->pluck('Name')->toArray();
+
+    $same = null;
+    $diference = PHP_INT_MAX;
+
+    foreach ($fullname as $fullname) {
+        similar_text($Name, $fullname, $similar);
+
+        if ($similar > 80 && $similar < $diference) {
+            $same = $fullname;
+            $diference = $similar;
+        }
+    }
+
+    return $same;
+}
+
+public function statesFullName(Request $request)
+    {
+        $input = strtoupper($request->query('Name'));
+
+    $MapAbbr = [
+        'AGS' => 'AGUASCALIENTES',
+        'BC' => 'BAJA CALIFORNIA',
+        'BCS' => 'BAJA CALIFORNIA SUR',
+        'CAMP' => 'CAMPECHE',
+        'CHIS' => 'CHIAPAS',
+        'CHIH' => 'CHIHUAHUA',
+        'COAH' => 'COAHUILA',
+        'COL' => 'COLIMA',
+        'DF' => 'DISTRITO FEDERAL',
+        'DGO' => 'DURANGO',
+        'GTO' => 'GUANAJUATO',
+        'GRO' => 'GUERRERO',
+        'HGO' => 'HIDALGO',
+        'JAL' => 'JALISCO',
+        'MEX' => 'MEXICO',
+        'MICH' => 'MICHOACAN',
+        'MOR' => 'MORELOS',
+        'NAY' => 'NAYARIT',
+        'NL' => 'NUEVO LEON',
+        'OAX' => 'OAXACA',
+        'PUE' => 'PUEBLA',
+        'QRO' => 'QUERETARO',
+        'QROO' => 'QUINTANA ROO',
+        'SLP' => 'SAN LUIS POTOSI',
+        'SIN' => 'SINALOA',
+        'SON' => 'SONORA',
+        'TAB' => 'TABASCO',
+        'TAMPS' => 'TAMAULIPAS',
+        'TLAX' => 'TLAXCALA',
+        'VER' => 'VERACRUZ',
+        'YUC' => 'YUCATAN',
+        'ZAC' => 'ZACATECAS'
+    ];
+
+    if (isset($MapAbbr[$input])) {
+        return response()->json(['Full Name' => $MapAbbr[$input]]);
+    }
+
+    $FullNames = State::pluck('Name')->toArray();
+
+    $similary = null;
+
+    foreach ($FullNames as $FullNames) {
+        $FullNames = strtoupper($FullNames);
+        
+        if (strpos($FullNames, $input) !== false) {
+            $similary = $FullNames;
+            break; 
+        }
+    }
+
+    return response()->json(['Full Name' => $similary]);
+}
 }
