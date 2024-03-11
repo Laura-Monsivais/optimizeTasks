@@ -229,58 +229,13 @@ public function statesFullName(Request $request)
     {
         $input = strtoupper($request->query('Name'));
 
-    $MapAbbr = [
-        'AGS' => 'AGUASCALIENTES',
-        'BC' => 'BAJA CALIFORNIA',
-        'BCS' => 'BAJA CALIFORNIA SUR',
-        'CAMP' => 'CAMPECHE',
-        'CHIS' => 'CHIAPAS',
-        'CHIH' => 'CHIHUAHUA',
-        'COAH' => 'COAHUILA',
-        'COL' => 'COLIMA',
-        'DF' => 'DISTRITO FEDERAL',
-        'DGO' => 'DURANGO',
-        'GTO' => 'GUANAJUATO',
-        'GRO' => 'GUERRERO',
-        'HGO' => 'HIDALGO',
-        'JAL' => 'JALISCO',
-        'MEX' => 'MEXICO',
-        'MICH' => 'MICHOACAN',
-        'MOR' => 'MORELOS',
-        'NAY' => 'NAYARIT',
-        'NL' => 'NUEVO LEON',
-        'OAX' => 'OAXACA',
-        'PUE' => 'PUEBLA',
-        'QRO' => 'QUERETARO',
-        'QROO' => 'QUINTANA ROO',
-        'SLP' => 'SAN LUIS POTOSI',
-        'SIN' => 'SINALOA',
-        'SON' => 'SONORA',
-        'TAB' => 'TABASCO',
-        'TAMPS' => 'TAMAULIPAS',
-        'TLAX' => 'TLAXCALA',
-        'VER' => 'VERACRUZ',
-        'YUC' => 'YUCATAN',
-        'ZAC' => 'ZACATECAS'
-    ];
+    // Buscar en la base de datos directamente
+    $matchingState = State::where('Abreviatura', $input)->orWhere('Name', 'like', '%' . $input . '%')->first();
 
-    if (isset($MapAbbr[$input])) {
-        return response()->json(['Full Name' => $MapAbbr[$input]]);
+    if ($matchingState) {
+        return response()->json(['Full Name' => $matchingState->Name]);
     }
 
-    $FullNames = State::pluck('Name')->toArray();
-
-    $similary = null;
-
-    foreach ($FullNames as $FullNames) {
-        $FullNames = strtoupper($FullNames);
-        
-        if (strpos($FullNames, $input) !== false) {
-            $similary = $FullNames;
-            break; 
-        }
-    }
-
-    return response()->json(['Full Name' => $similary]);
+    return response()->json(['Full Name' => null]);
 }
 }

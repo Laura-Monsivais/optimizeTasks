@@ -9,7 +9,7 @@ class State extends Model
 {
     use HasFactory;
     protected $table = 'states';
-    protected $fillable = ['ID', 'Name'];
+    protected $fillable = ['ID', 'Name', 'Abreviatura'];
 
     public static function FindState($id) {
         $State = State::find($id);
