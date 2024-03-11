@@ -314,7 +314,7 @@ public function statesFullName(Request $request)
         $input = strtoupper($request->query('Name'));
 
     // Buscar en la base de datos directamente
-    $matchingState = State::where('Abreviatura', $input)->orWhere('Name', 'like', '%' . $input . '%')->first();
+    $matchingState = State::where('Short', $input)->orWhere('Name', 'like', '%' . $input . '%')->first();
 
     if ($matchingState) {
         return response()->json(['Full Name' => $matchingState->Name]);
