@@ -15,7 +15,8 @@ return new class extends Migration
             $table->id();
             $table->string('Name');
             $table->integer('ProgramShiftID');
-            $table->foreign('TermID')->references('id')->on('terms');
+            $table->unsignedBigInteger('TermID')->nullable();
+            $table->foreign('TermID')->references('id')->on('terms')->onDelete('cascade');
             $table->integer('ProgramID')->nullable();
             $table->integer('ClassLevelID')->nullable();
             $table->string('Owner_CID');
