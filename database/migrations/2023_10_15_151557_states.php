@@ -14,6 +14,7 @@ return new class extends Migration
         Schema::create('states', function(Blueprint $table){
             $table->bigIncrements('ID');
             $table->string('Name');
+            $table->string('Abreviatura');
             $table->timestamps();
         });
     }

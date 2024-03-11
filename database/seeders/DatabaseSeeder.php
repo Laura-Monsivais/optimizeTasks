@@ -19,6 +19,7 @@ class DatabaseSeeder extends Seeder
       $this->call(NationalitySeeder::class);
       $this->call(FamilySeeder::class);
       $this->call(StudentSeeder::class);
+      $this->call(ClassLevelSeeder::class);
 
     }
 }
