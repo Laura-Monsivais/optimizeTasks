@@ -14,6 +14,7 @@ return new class extends Migration
         Schema::create('countries', function(Blueprint $table){
             $table->bigIncrements('ID');
             $table->string('Name');
+            $table->string('Short')->nullable();
             $table->timestamps();
         });
     }

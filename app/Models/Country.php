@@ -9,7 +9,7 @@ class Country extends Model
 {
     use HasFactory;
     protected $table = 'countries';
-    protected $fillable = ['ID', 'Name'];
+    protected $fillable = ['ID', 'Name','Short'];
 
     public function FindCountry($id) {
         $Country = Country::find($id);

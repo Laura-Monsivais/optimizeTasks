@@ -314,10 +314,25 @@ public function statesFullName(Request $request)
         $input = strtoupper($request->query('Name'));
 
     // Buscar en la base de datos directamente
-    $matchingState = State::where('Short', $input)->orWhere('Name', 'like', '%' . $input . '%')->first();
+    $matchingState = State::where('Short', $input)->orWhere('Name', 'like', '%' . $input . '%')->firstOrFail();
 
     if ($matchingState) {
-        return response()->json(['Full Name' => $matchingState->Name]);
+        return response()->json(['Full Name State ' => $matchingState->Name]);
+    } else {
+        return response()->json(['error' => 'State not found'], 404);
     }
+}
+
+public function countryFullName(Request $request)
+    {
+        $input = strtoupper($request->query('Name'));
+
+        $matchingCountry = Country::where('Short', $input)->orWhere('Name', 'like', '%' . $input . '%')->firstOrFail();
+        
+        if ($matchingCountry) {
+            return response()->json(['Full Name Country' => $matchingCountry->Name]);
+        } else {
+            return response()->json(['error' => 'Country not found'], 404);
+        }
 }
 }
