@@ -125,4 +125,39 @@ class AcademicController extends Controller
         }
         return response()->json(['group' => $group], 200);
     }
+
+public function createPrograms(Request $request)
+{
+    $nivel = $request->input('Name');
+
+    $programData = [
+        'Kinder' => 'KN',
+        'Primaria' => 'PRIM',
+        'Secundaria' => 'SEC',
+        'Preparatoria' => 'BACH',
+        'Universidad' => 'UNIV',
+    ];
+
+    if (!array_key_exists($nivel, $programData)) {
+        throw new \InvalidArgumentException("Programa no válido: $nivel");
+    }
+
+    foreach ($programData as $name => $short) {
+        if ($name == $nivel || $short === null) {
+            break;
+        }
+
+        Program::create([
+            'Name' => $name,
+            'Short' => $short,
+        ]);
+    }
+
+    $program = Program::create([
+        'Name' => $request->input('Name'),
+        'Short' => $request->input('Short'),
+    ]);
+
+    return response()->json(['mensaje' => 'El programa ha sido creado correctamente', 'program' => $program], 201);
+}
 }
