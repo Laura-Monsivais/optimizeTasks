@@ -10,14 +10,14 @@ class Program extends Model
     protected $table = 'programs';
     protected $fillable = ['ID', 'Name', 'Short'];
 
-    public static function FindProgram($id) {
+    public static function FindProgram($id)
+    {
         $program = Program::find($id);
-    
+
         if ($program) {
             return $program;
         } else {
             return response()->json(['mensaje' => 'Registro no encontrado'], 404);
         }
     }
-    use HasFactory;
 }

@@ -12,7 +12,7 @@ return new class extends Migration
     public function up(): void
     {
         Schema::create('temporary', function (Blueprint $table) {
-            $table->id();
+            $table->bigIncrements('id')->startingValue(1000);
             $table->json('data'); 
             $table->timestamps();
         });

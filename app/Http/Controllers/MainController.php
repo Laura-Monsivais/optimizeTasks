@@ -18,27 +18,30 @@ class MainController extends Controller
     {
         $import = new ImportClass;
         Excel::import($import, $request->file('excel_file')->store('import_files'));
-        $data = TemporaryTable::all();
-        session()->put('imported_data', $data);
         return redirect()->route('showTableImport');
     }
 
     public function showTableImport()
     {
-        $data = session()->get('imported_data');
+        $data = TemporaryTable::all();
+
+        if ($data->isEmpty()) {
+            // Redirigir a la página 404 si no hay datos
+            return response()->view('errors-404', [], 404);
+        }
+    
+
         return view('import-table', compact('data'));
     }
 
     public function checkUpdates()
     {
-        $currentCount = TemporaryTable::count();
-    
-        $previousCount = session('imported_data_count', 0);
-        $changes = $currentCount !== $previousCount;
-    
-        session(['imported_data_count' => $currentCount]);
-    
+        $previousData = session('imported_data');
+        $currentData = TemporaryTable::pluck('data')->toArray();
+        $changes = $previousData !== $currentData;
+
+        session(['imported_data' => $currentData]);
+
         return response()->json(['changes' => $changes]);
     }
-    
 }

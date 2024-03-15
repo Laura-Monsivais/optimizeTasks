@@ -9,6 +9,7 @@ use App\Models\MaritalStatus;
 use App\Models\Nationality;
 use App\Models\Place;
 use App\Models\Religion;
+use App\Models\TemporaryTable;
 
 class StudentsController extends Controller
 {
@@ -48,6 +49,135 @@ class StudentsController extends Controller
         return response()->json(['El alumno se agrego exitosamente'], 200);
     }
 
+    public function separateFullName(Request $request)
+    {
+        $columnData = $request->input('columnData');
+        $namesWithSurnames = [];
+    
+        foreach ($columnData as $fullName) {
+            if (!empty($fullName)) {
+                $separatedNames = $this->separate($fullName);
+                $namesWithSurnames[] = $separatedNames;
+            }
+        }
+        $records = TemporaryTable::all();
+    
+        foreach ($records as $key => $record) {
+            if (isset($namesWithSurnames[$key])) {
+                $recordData = json_decode($record->data, true);
+    
+                $recordData['Last (alumnos)'] = $namesWithSurnames[$key]['Last (alumnos)'];
+                $recordData['Last2 (alumnos)'] = $namesWithSurnames[$key]['Last2 (alumnos)'];
+                $recordData['Name (alumnos)'] = $namesWithSurnames[$key]['Name (alumnos)'];
+                $record->update(['data' => json_encode($recordData)]);
+            }
+        }
+        return response()->json([
+            'success' => true,
+            'message' => 'Nombre completo separado correctamente.',
+            'namesWithSurnames' => $namesWithSurnames
+        ]);
+    }
+    
+    public static function separate($fullName, $firstName = false){
+        $chunks = ($firstName)
+            ? explode(" ", strtoupper($fullName))
+            : array_reverse(explode(" ", strtoupper($fullName)));
+        $exceptions = ["DE", "LA", "DEL", "LOS", "SAN", "SANTA"];
+        $exist = array_intersect($chunks, $exceptions);
+        $name = array( "Last2 (alumnos)" => "", "Last (alumnos)" => "", "Name (alumnos)" => "" );
+        $add = ($firstName)
+            ? "paterno"
+            : "materno";
+        $first_time = true;
+        if($firstName){
+            if(!empty($exist)){
+                foreach ($chunks as $chunk) {
+                    if($first_time){
+                        $name["Last (alumnos)"] = $name["Last (alumnos)"] . " " . $chunk;
+                        $first_time = false;
+                    }else{
+                        if(in_array($chunk, $exceptions)){
+                            if($add == "paterno")
+                                $name["Last (alumnos)"] = $name["Last (alumnos)"] . " " . $chunk;
+                            elseif($add == "materno")
+                                $name["Last2 (alumnos)"] = $name["Last2 (alumnos)"] . " " . $chunk;
+                            else
+                                $name["Name (alumnos)"] = $name["Name (alumnos)"] . " " . $chunk;
+                        }else{
+                            if($add == "paterno"){
+                                $name["Last (alumnos)"] = $name["Last (alumnos)"] . " " . $chunk;
+                                $add = "materno";
+                            }elseif($add == "materno"){
+                                $name["Last2 (alumnos)"] = $name["Last2 (alumnos)"] . " " . $chunk;
+                                $add = "nombres";
+                            }else{
+                                $name["Name (alumnos)"] = $name["Name (alumnos)"] . " " . $chunk;
+                            }
+                        }
+                    }
+                }
+            }else{
+                foreach ($chunks as $chunk) {
+                    if($first_time){
+                        $name["Last (alumnos)"] = $name["Last (alumnos)"] . " " . $chunk;
+                        $first_time = false;
+                    }else{
+                        if(in_array($chunk, $exceptions)){
+                            if($add == "paterno")
+                                $name["Last (alumnos)"] = $name["Last (alumnos)"] . " " . $chunk;
+                            elseif($add == "materno")
+                                $name["Last2 (alumnos)"] = $name["Last2 (alumnos)"] . " " . $chunk;
+                            else
+                                $name["Name (alumnos)"] = $name["Name (alumnos)"] . " " . $chunk;
+                        }else{
+                            if($add == "paterno"){
+                                $name["Last2 (alumnos)"] = $name["Last2 (alumnos)"] . " " . $chunk;
+                                $add = "materno";
+                            }elseif($add == "materno"){
+                                $name["Name (alumnos)"] = $name["Name (alumnos)"] . " " . $chunk;
+                                $add = "nombres";
+                            }else{
+                                $name["Name (alumnos)"] = $name["Name (alumnos)"] . " " . $chunk;
+                            }
+                        }
+                    }
+                }
+            }
+        }else{
+            foreach($chunks as $chunk){
+                if($first_time){
+                    $name["Last2 (alumnos)"] = $chunk . " " . $name["Last2 (alumnos)"];
+                    $first_time = false;
+                }else{
+                    if(in_array($chunk, $exceptions)){
+                        if($add == "materno")
+                            $name["Last2 (alumnos)"] = $chunk . " " . $name["Last2 (alumnos)"];
+                        elseif($add == "paterno")
+                            $name["Last (alumnos)"] = $chunk . " " . $name["Last (alumnos)"];
+                        else
+                            $name["Name (alumnos)"] = $chunk . " " . $name["Name (alumnos)"];
+                    }else{
+                        if($add == "materno"){
+                            $add = "paterno";
+                            $name["Last (alumnos)"] = $chunk . " " . $name["Last (alumnos)"];
+                        }elseif($add == "paterno"){
+                            $add = "nombres";
+                            $name["Name (alumnos)"] = $chunk . " " . $name["Name (alumnos)"];
+                        }else{
+                            $name["Name (alumnos)"] = $chunk . " " . $name["Name (alumnos)"];
+                        }
+                    }
+                }
+            }
+        }
+        // LIMPIEZA DE ESPACIOS
+        $name["Last2 (alumnos)"] = trim($name["Last2 (alumnos)"]);
+        $name["Last (alumnos)"] = trim($name["Last (alumnos)"]);
+        $name["Name (alumnos)"] = trim($name["Name (alumnos)"]);
+        return $name;
+    }
+    
     public function validateCurp($curp_)
     {
         /* Cambiar el código a inglés */

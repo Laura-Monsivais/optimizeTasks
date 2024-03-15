@@ -1,6 +1,7 @@
 <?php
 
 namespace App\Http\Controllers;
+
 use App\Models\Academic;
 use App\Models\Group;
 use App\Models\Program;
@@ -13,7 +14,7 @@ class AcademicController extends Controller
     /* Crear la migracion, modelo, rutas y funciones*/
     public function createTerm(Request $request)
     {
-        
+
         // Crea un nuevo ciclo escolar
         $term = Term::create([
             'Name' => $request->input('Name'),
@@ -37,9 +38,8 @@ class AcademicController extends Controller
             'StartDate' => $request->input('NameStart'),
             'EndDate' => $request->input('EndDate'),
         ]);
-        
-    return response()->json(['mensaje'=>'El ciclo se actualizado correctamente','term'=>$term],200);
-    
+
+        return response()->json(['mensaje' => 'El ciclo se actualizado correctamente', 'term' => $term], 200);
     }
 
     public function destroyTerm($id)
@@ -100,9 +100,8 @@ class AcademicController extends Controller
             'ClassLevelID' => $request->input('ClassLevelID'),
             'Owner_CID' => 0,
         ]);
-        
-    return response()->json(['mensaje'=>'El grupo ha sido actualizado correctamente','group'=>$group],200);
-    
+
+        return response()->json(['mensaje' => 'El grupo ha sido actualizado correctamente', 'group' => $group], 200);
     }
 
     public function destroyGroup($id)
@@ -126,38 +125,38 @@ class AcademicController extends Controller
         return response()->json(['group' => $group], 200);
     }
 
-public function createPrograms(Request $request)
-{
-    $nivel = $request->input('Name');
+    public function createPrograms(Request $request)
+    {
+        $nivel = $request->input('Name');
 
-    $programData = [
-        'Kinder' => 'KN',
-        'Primaria' => 'PRIM',
-        'Secundaria' => 'SEC',
-        'Preparatoria' => 'BACH',
-        'Universidad' => 'UNIV',
-    ];
+        $programData = [
+            'Kinder' => 'KN',
+            'Primaria' => 'PRIM',
+            'Secundaria' => 'SEC',
+            'Preparatoria' => 'BACH',
+            'Universidad' => 'UNIV',
+        ];
 
-    if (!array_key_exists($nivel, $programData)) {
-        throw new \InvalidArgumentException("Programa no válido: $nivel");
-    }
-
-    foreach ($programData as $name => $short) {
-        if ($name == $nivel || $short === null) {
-            break;
+        if (!array_key_exists($nivel, $programData)) {
+            throw new \InvalidArgumentException("Programa no válido: $nivel");
         }
 
-        Program::create([
-            'Name' => $name,
-            'Short' => $short,
+        foreach ($programData as $name => $short) {
+            if ($name == $nivel || $short === null) {
+                break;
+            }
+
+            Program::create([
+                'Name' => $name,
+                'Short' => $short,
+            ]);
+        }
+
+        $program = Program::create([
+            'Name' => $request->input('Name'),
+            'Short' => $request->input('Short'),
         ]);
+
+        return response()->json(['mensaje' => 'El programa ha sido creado correctamente', 'program' => $program], 201);
     }
-
-    $program = Program::create([
-        'Name' => $request->input('Name'),
-        'Short' => $request->input('Short'),
-    ]);
-
-    return response()->json(['mensaje' => 'El programa ha sido creado correctamente', 'program' => $program], 201);
-}
 }

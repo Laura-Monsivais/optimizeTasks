@@ -11,9 +11,10 @@ class Place extends Model
     protected $table = 'places';
     protected $fillable = ['ID', 'Name', 'Short'];
 
-    public function FindFamily($id) {
+    public function FindFamily($id)
+    {
         $Place = Family::find($id);
-    
+
         if ($Place) {
             return $Place;
         } else {

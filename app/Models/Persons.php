@@ -9,11 +9,12 @@ class Persons extends Model
 {
     use HasFactory;
 
-    protected $fillable=['Name','Last','Last2','Gender','BirthDate','BirthPlaceID','BirthCity','CURP','CellPhone','PrimaryEmail','MaritalStatusID','WorkPlace','WorkJob'];
+    protected $fillable = ['Name', 'Last', 'Last2', 'Gender', 'BirthDate', 'BirthPlaceID', 'BirthCity', 'CURP', 'CellPhone', 'PrimaryEmail', 'MaritalStatusID', 'WorkPlace', 'WorkJob'];
 
-    public function FindFamily($id) {
+    public function FindFamily($id)
+    {
         $Persons = Family::find($id);
-    
+
         if ($Persons) {
             return $Persons;
         } else {

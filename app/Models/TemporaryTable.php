@@ -11,6 +11,4 @@ class TemporaryTable extends Model
 
     protected $table = 'temporary';
     protected $fillable = ['data'];
-
- 
 }

@@ -11,9 +11,10 @@ class State extends Model
     protected $table = 'states';
     protected $fillable = ['ID', 'Name', 'Short'];
 
-    public static function FindState($id) {
+    public static function FindState($id)
+    {
         $State = State::find($id);
-    
+
         if ($State) {
             return $State;
         } else {

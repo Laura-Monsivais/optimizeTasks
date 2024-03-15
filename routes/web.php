@@ -22,6 +22,10 @@ Route::get('/', [MainController::class, 'showImport'])->name('showImport');
 Route::post('/import', [MainController::class, 'uploadImport'])->name('uploadImport');
 Route::get('/import/table', [MainController::class, 'showTableImport'])->name('showTableImport');
 Route::get('/check-updates', [MainController::class, 'checkUpdates']);
+Route::fallback(function () {
+    return view('errors-404');
+});
+
 
 
 /* Familias */
@@ -64,4 +68,4 @@ Route::post('/academic/updateGroup/{id}', [AcademicController::class, 'updateGro
 Route::get('/academic/destroyGroup/{id}', [AcademicController::class, 'destroyGroup']);
 Route::get('/academic/getGroup/{id}', [AcademicController::class, 'getGroup']);
 
-Route::post('/academic/CreatePrograms', [AcademicController::class, 'CreatePrograms']);
+Route::post('/academic/createPrograms', [AcademicController::class, 'createPrograms']);

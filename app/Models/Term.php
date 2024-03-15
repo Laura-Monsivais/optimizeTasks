@@ -8,11 +8,12 @@ use Illuminate\Database\Eloquent\Model;
 class Term extends Model
 {
     use HasFactory;
-    protected $fillable=['ID','NextID','TermProfileID','BillingPeriodID','Name','OficialName','StartDate','EndDate','Status','StudentsStatus','K12_SEPBimGPsEq'];
+    protected $fillable = ['ID', 'NextID', 'TermProfileID', 'BillingPeriodID', 'Name', 'OficialName', 'StartDate', 'EndDate', 'Status', 'StudentsStatus', 'K12_SEPBimGPsEq'];
 
-    public function FindTerm($id) {
+    public function FindTerm($id)
+    {
         $Term = Term::find($id);
-    
+
         if ($Term) {
             return $Term;
         } else {

@@ -2,15 +2,8 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\MaritalStatus;
 use App\Models\Persons;
 use Illuminate\Http\Request;
-use App\Models\Country;
-use App\Models\Family;
-use App\Models\State;
-use App\Models\Students;
-use Faker\Core\Number;
-use Illuminate\Support\Facades\Validator;
 
 
 class PersonsController extends Controller
@@ -24,7 +17,6 @@ class PersonsController extends Controller
 
     public function store(Request $request, $ID)
     {
-
         $Persons = Persons::find($ID);
         // Verificar si la persona ya tiene un ID de familia
         if ($Persons->ID === null) {      // Crear una nueva familia utilizando los apellidos de la persona

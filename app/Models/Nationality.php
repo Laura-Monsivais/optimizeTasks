@@ -11,9 +11,10 @@ class Nationality extends Model
 
     protected $table = 'nationalities';
     protected $fillable = ['ID', 'Name'];
-    public function FindNationality($id) {
+    public function FindNationality($id)
+    {
         $Nacionality = Nationality::find($id);
-    
+
         if ($Nacionality) {
             return $Nacionality;
         } else {

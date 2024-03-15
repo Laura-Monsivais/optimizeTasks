@@ -12,9 +12,10 @@ class MaritalStatus extends Model
     protected $table = 'marital_status';
     protected $fillable = ['ID', 'Name'];
 
-    public function FindMaritalStatus($id) {
+    public function FindMaritalStatus($id)
+    {
         $Marital = MaritalStatus::find($id);
-    
+
         if ($Marital) {
             return $Marital;
         } else {
