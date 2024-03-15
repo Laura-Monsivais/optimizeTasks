@@ -159,4 +159,34 @@ class AcademicController extends Controller
 
         return response()->json(['mensaje' => 'El programa ha sido creado correctamente', 'program' => $program], 201);
     }
+
+    
+    public function updateProgram(Request $request, $id)
+    {
+    $program = Program::find($id);
+
+    if (!$program) {
+        return response()->json(['mensaje' => 'Programa no encontrado'], 404);
+    }
+    $program->update([
+        'Name' => $request->input('Name'),
+        'Short' => $request->input('Short'),
+    ]);
+    
+    return response()->json(['mensaje'=>'El programa se ha actualizado correctamente','program'=>$program],200);
+
+    }
+
+    public function destroyProgram($id)
+    {
+    $program = Program::find($id);
+
+    if (!$program) {
+        return response()->json(['mensaje' => 'Programa no encontrado'], 404);
+    }
+    $program->delete();
+
+    return response()->json(['mensaje' => 'El programa ha sido eliminado correctamente'], 200);
+    }
+
 }
