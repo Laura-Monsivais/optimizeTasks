@@ -10,7 +10,9 @@ class Persons extends Model
     use HasFactory;
 
     protected $fillable = ['Name', 'Last', 'Last2', 'Gender', 'BirthDate', 'BirthPlaceID', 'BirthCity', 'CURP', 'CellPhone', 'PrimaryEmail', 'MaritalStatusID', 'WorkPlace', 'WorkJob'];
-
+    public function MaritalStatus(){
+        return $this->hasOne(MaritalStatus::class,'MaritalStatusID');
+    }
     public function FindFamily($id)
     {
         $Persons = Family::find($id);

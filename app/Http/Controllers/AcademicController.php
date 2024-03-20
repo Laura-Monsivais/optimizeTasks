@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Academic;
+use App\Models\ClassLevel;
 use App\Models\Group;
 use App\Models\Program;
 use App\Models\Term;
@@ -156,6 +157,48 @@ class AcademicController extends Controller
             'Name' => $request->input('Name'),
             'Short' => $request->input('Short'),
         ]);
+
+        switch ($nivel) {
+            case 'Kinder':
+                if($nivel=='Kinder'){
+                    ClassLevel::whereIn('grado', $programData['Kinder'])->update(['Visible' => 1]);
+                }else{
+                    ClassLevel::whereIn('grado', $programData['Kinder'])->update(['Visible' => 0]);
+                }
+                
+                break;
+            case 'Primaria':
+                if($nivel=='Primaria'){
+                    ClassLevel::whereIn('grado', $programData['Primaria'])->update(['Visible' => 1]);
+                }else{
+                    ClassLevel::whereIn('grado', $programData['Primaria'])->update(['Visible' => 0]);
+                }
+                break;
+            case 'Secundaria':
+                if($nivel=='Secundaria'){
+                    ClassLevel::whereIn('grado', $programData['Secundaria'])->update(['Visible' => 1]);
+                }else{
+                    ClassLevel::whereIn('grado', $programData['Secundaria'])->update(['Visible' => 0]);
+                }
+                break;
+            case 'Preparatoria':
+                if($nivel=='Preparatoria'){
+                    ClassLevel::whereIn('grado', $programData['Preparatoria'])->update(['Visible' => 1]);
+                }else{
+                    ClassLevel::whereIn('grado', $programData['Preparatoria'])->update(['Visible' => 0]);
+                }
+                break;
+            case 'Universidad':
+                if($nivel=='Universidad'){
+                    ClassLevel::whereIn('grado', $programData['Universidad'])->update(['Visible' => 1]);
+                }else{
+                    ClassLevel::whereIn('grado', $programData['Universidads'])->update(['Visible' => 0]);
+                }
+                break;
+            default:
+                // No se necesita modificar valores para otros programas
+                break;
+        }
 
         return response()->json(['mensaje' => 'El programa ha sido creado correctamente', 'program' => $program], 201);
     }

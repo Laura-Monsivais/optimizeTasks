@@ -10,6 +10,19 @@ class Group extends Model
     use HasFactory;
     protected $fillable = ['ProgramShiftID', 'TermID', 'ProgramID', 'ClassLevelID', 'Name', 'Owner_CID'];
 
+    public function Program(){
+        return $this->hasOne(Program::class,'ProgramID');
+    }
+
+    public function ClassLevel(){
+        return $this->hasOne(ClassLevel::class,'ClassLevelID');
+    }
+
+    public function Term(){
+        return $this->hasOne(Term::class,'TermID');
+    }
+
+
     public function FindGroup($id)
     {
         $group = Group::find($id);
