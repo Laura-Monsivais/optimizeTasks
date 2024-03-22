@@ -125,85 +125,62 @@ class AcademicController extends Controller
         }
         return response()->json(['group' => $group], 200);
     }
-
+    
     public function createPrograms(Request $request)
     {
         $nivel = $request->input('Name');
-
+        $createdPrograms = [];
+    
         $programData = [
             'Kinder' => 'KN',
             'Primaria' => 'PRIM',
             'Secundaria' => 'SEC',
-            'Preparatoria' => 'BACH',
+            'Bachillerato' => 'BACH',
             'Universidad' => 'UNIV',
         ];
-
-        if (!array_key_exists($nivel, $programData)) {
+    
+        $foundProgram = false;
+    
+        foreach ($programData as $programName => $short) {
+            $programInitial = strtolower(substr($programName, 0, 1));
+            if (strpos(strtolower($nivel), $programInitial) !== false) {
+                $foundProgram = true;
+                ClassLevel::where('Name', 'like', "%$programInitial%")->update(['Visible' => 1]);
+            } else {
+                ClassLevel::where('Name', 'like', "%$programInitial%")->update(['Visible' => 0]);
+            }
+        }
+    
+        if (!$foundProgram) {
             throw new \InvalidArgumentException("Programa no válido: $nivel");
         }
-
+    
         foreach ($programData as $name => $short) {
             if ($name == $nivel || $short === null) {
                 break;
             }
-
-            Program::create([
+    
+            $createdProgram = Program::create([
                 'Name' => $name,
                 'Short' => $short,
             ]);
+    
+            $createdPrograms[] = $createdProgram;
         }
-
+    
         $program = Program::create([
             'Name' => $request->input('Name'),
             'Short' => $request->input('Short'),
         ]);
-
-        switch ($nivel) {
-            case 'Kinder':
-                if($nivel=='Kinder'){
-                    ClassLevel::whereIn('grado', $programData['Kinder'])->update(['Visible' => 1]);
-                }else{
-                    ClassLevel::whereIn('grado', $programData['Kinder'])->update(['Visible' => 0]);
-                }
-                
-                break;
-            case 'Primaria':
-                if($nivel=='Primaria'){
-                    ClassLevel::whereIn('grado', $programData['Primaria'])->update(['Visible' => 1]);
-                }else{
-                    ClassLevel::whereIn('grado', $programData['Primaria'])->update(['Visible' => 0]);
-                }
-                break;
-            case 'Secundaria':
-                if($nivel=='Secundaria'){
-                    ClassLevel::whereIn('grado', $programData['Secundaria'])->update(['Visible' => 1]);
-                }else{
-                    ClassLevel::whereIn('grado', $programData['Secundaria'])->update(['Visible' => 0]);
-                }
-                break;
-            case 'Preparatoria':
-                if($nivel=='Preparatoria'){
-                    ClassLevel::whereIn('grado', $programData['Preparatoria'])->update(['Visible' => 1]);
-                }else{
-                    ClassLevel::whereIn('grado', $programData['Preparatoria'])->update(['Visible' => 0]);
-                }
-                break;
-            case 'Universidad':
-                if($nivel=='Universidad'){
-                    ClassLevel::whereIn('grado', $programData['Universidad'])->update(['Visible' => 1]);
-                }else{
-                    ClassLevel::whereIn('grado', $programData['Universidads'])->update(['Visible' => 0]);
-                }
-                break;
-            default:
-                // No se necesita modificar valores para otros programas
-                break;
-        }
-
-        return response()->json(['mensaje' => 'El programa ha sido creado correctamente', 'program' => $program], 201);
+    
+        $createdPrograms[] = $program;
+    
+        return response()->json([
+            'mensaje' => 'El programa ha sido creado correctamente',
+            'programas_creados' => $createdPrograms
+        ], 201);
     }
 
-    
     public function updateProgram(Request $request, $id)
     {
     $program = Program::find($id);

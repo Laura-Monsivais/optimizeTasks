@@ -36,7 +36,7 @@ class ClassLevelSeeder extends Seeder
             ['ID' => 19, 'Name' => '4to Semestre', 'Short' => 'IV', 'CurrentCap' => '0', 'FutureCap' => '0', 'GroupCap' => '0', 'NivelEducativoID' => '0', 'SEPName' => 'Cuarto Semestre', 'Accounting' => '0', 'Visible' => '0', 'Delta' => '1'],
             ['ID' => 20, 'Name' => '5to Semestre', 'Short' => 'V', 'CurrentCap' => '0', 'FutureCap' => '0', 'GroupCap' => '0', 'NivelEducativoID' => '0', 'SEPName' => 'Quinto Semestre', 'Accounting' => '0', 'Visible' => '0', 'Delta' => '2'],
             ['ID' => 21, 'Name' => '6to Semestre', 'Short' => 'VI', 'CurrentCap' => '0', 'FutureCap' => '0', 'GroupCap' => '0', 'NivelEducativoID' => '0', 'SEPName' => 'Sexto Semestre', 'Accounting' => '0', 'Visible' => '0', 'Delta' => '1'],
-            ['ID' => 21, 'Name' => 'Universidad', 'Short' => 'I', 'CurrentCap' => '0', 'FutureCap' => '0', 'GroupCap' => '0', 'NivelEducativoID' => '0', 'SEPName' => 'Universidad', 'Accounting' => '0', 'Visible' => '0', 'Delta' => '1']
+            ['ID' => 22, 'Name' => 'Universidad', 'Short' => 'I', 'CurrentCap' => '0', 'FutureCap' => '0', 'GroupCap' => '0', 'NivelEducativoID' => '0', 'SEPName' => 'Universidad', 'Accounting' => '0', 'Visible' => '0', 'Delta' => '1']
         ];
         ClassLevel::insert($classlevel);
     }

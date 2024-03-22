@@ -13,6 +13,10 @@ class Persons extends Model
     public function MaritalStatus(){
         return $this->hasOne(MaritalStatus::class,'MaritalStatusID');
     }
+
+    public function BirthPlace(){
+        return $this->hasOne(Place::class,'BirthPlace');
+    }
     public function FindFamily($id)
     {
         $Persons = Family::find($id);
