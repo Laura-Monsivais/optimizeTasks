@@ -15,7 +15,7 @@ class Persons extends Model
     }
 
     public function BirthPlace(){
-        return $this->hasOne(Place::class,'BirthPlace');
+        return $this->hasOne(Place::class,'BirthPlaceID');
     }
     public function FindFamily($id)
     {

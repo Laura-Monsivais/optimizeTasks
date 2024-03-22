@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\MaritalStatus;
 use App\Models\Persons;
 use Illuminate\Http\Request;
 
@@ -92,4 +93,17 @@ class PersonsController extends Controller
             return "F";
         }
     }
+
+    public function getMaritalStatusID($id)
+    {
+        $MaritalStatusID = MaritalStatus::find($id);
+        return $MaritalStatusID;
+    }
+
+    public function getFamilyMemberTypeID(){
+
+    }
+
+
+
 }
